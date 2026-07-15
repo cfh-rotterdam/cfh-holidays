@@ -1,0 +1,366 @@
+<div id="app"></div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+  :root{
+    --ink:#16181D; --board:#F4F4F0; --line:#DDDDD6; --line2:#E4E4DC;
+    --hol:#FF5A1F; --cov:#3E9B4F; --mut:#5B6770; --err:#E5484D;
+  }
+  #app{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--board);color:var(--ink);min-height:100vh}
+  .disp{font-family:'Bebas Neue','Arial Narrow',sans-serif;letter-spacing:.04em}
+  header{background:var(--ink);padding:12px 16px;display:flex;justify-content:space-between;align-items:flex-end}
+  header h1{color:#fff;font-size:30px;line-height:1;margin:0}
+  header p{color:#9AA0A6;font-size:11px;margin:4px 0 0}
+  .btn{border:0;border-radius:6px;cursor:pointer;font-weight:600}
+  .btn-dark{background:#2A2E36;color:#E8E8E4;font-size:12px;padding:7px 14px}
+  .tabs{display:flex;gap:4px;padding:12px 16px 0}
+  .tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:18px;border:0;cursor:pointer;background:#DDDDD6;color:var(--mut)}
+  .tab.on{background:#fff;color:var(--ink)}
+  main{background:#fff;margin:0 16px 24px;border-radius:0 8px 8px 8px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px}
+  .chip{display:inline-flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:600;color:#fff}
+  .chip button{background:none;border:0;color:inherit;opacity:.7;cursor:pointer;padding:0;font-size:12px}
+  .chip button:hover{opacity:1}
+  .loc{background:#D7263D;color:#fff;border-radius:3px;padding:0 3px;font-size:9px;letter-spacing:.05em}
+  .loc.air{background:#0B0C0E;box-shadow:0 0 0 1px rgba(255,255,255,.55)}
+  input,select{border:1px solid #C8C8C0;border-radius:6px;padding:6px 8px;font-size:13px;background:#fff}
+  label span.lb{display:block;font-size:11px;font-weight:700;color:#888;margin-bottom:3px}
+  .card{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+  .card-h{background:var(--ink);display:flex;justify-content:space-between;align-items:center;padding:8px 12px}
+  .card-h h3{color:#fff;font-size:20px;margin:0}
+  .week{display:grid;grid-template-columns:repeat(7,1fr)}
+  .week>div{padding:8px;min-height:96px;border-left:1px solid #EEE}
+  .week>div:first-child{border-left:0}
+  .dayname{font-size:11px;font-weight:700;color:#888;margin-bottom:4px}
+  .stack{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+  .ghost{background:none;border:0;color:#AAA;font-size:11px;cursor:pointer;padding:0;text-align:left}
+  .ghost:hover{color:var(--ink)}
+  .panel{margin-top:16px;border:1px solid var(--line);background:#FBFBF8;border-radius:10px;padding:12px}
+  .covers{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:8px}
+  .cover{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid var(--line2);border-radius:6px;padding:6px 8px}
+  .cover.bad{border-color:var(--err)}
+  .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:6px;padding:8px 12px;font-size:13px;margin-bottom:6px}
+  table.cal{border-collapse:collapse;font-size:11px}
+  table.cal th,table.cal td{text-align:center}
+  table.cal td{border:1px solid #EFEFE8;width:24px;height:22px;min-width:24px}
+  .sticky{position:sticky;left:0;background:#fff;text-align:left!important;padding-right:8px;font-weight:600;white-space:nowrap;min-width:110px}
+  .muted{color:#888;font-size:12px}
+  .center{text-align:center;padding:24px 0}
+  @media(max-width:720px){.week{grid-template-columns:repeat(2,1fr)}.week>div{border-left:0;border-top:1px solid #EEE}}
+</style>
+<script>
+(function(){
+const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const BUILTIN=[{name:"WOD",color:"#000000"},{name:"Strength Class",color:"#8B1E3F"},{name:"Engine",color:"#0E6BA8"},{name:"HYROX",color:"#B7791F"},{name:"Oly",color:"#6B21A8"},{name:"Bootcamp",color:"#0F766E"},{name:"Kids",color:"#DB2777"},{name:"Teens",color:"#4338CA"},{name:"Silver",color:"#C0C0C0"},{name:"Core30",color:"#0891B2",dur:30},{name:"Open Gym",color:"#5B6770"}];
+const TIMES=(()=>{const o=[];for(let h=6;h<=22;h++)for(let q=0;q<4;q++){if(h===22&&q>0)break;o.push(pad2(h)+":"+pad2(q*15))}return o})();
+const LOCS=["Central","Airport"];
+function pad2(n){return String(n).padStart(2,"0")}
+const allTypes=()=>BUILTIN.concat(st.customTypes||[]);
+const typeOf=n=>allTypes().find(t=>t.name===n);
+const tcol=n=>{const t=typeOf(n);return(t&&t.color)||"#5B6770"};
+const tdur=n=>{const t=typeOf(n);return(t&&t.dur)||0};
+const tlabel=(time,n)=>time+" "+n+(tdur(n)?" "+tdur(n)+"'":"");
+const txtOn=c=>{const h=String(c).replace("#","");if(h.length<6)return"#fff";const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return(.299*r+.587*g+.114*b)>150?"#16181D":"#fff"};
+const chipStyle=n=>{const c=tcol(n);return"background:"+c+";color:"+txtOn(c)};
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const pad=n=>String(n).padStart(2,"0");
+const toKey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const fromKey=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const dayName=d=>DAYS[(d.getDay()+6)%7];
+const fmtShort=k=>{const d=fromKey(k);return dayName(d)+" "+d.getDate()+" "+MONTHS[d.getMonth()].slice(0,3)};
+const eachDay=(f,t)=>{const o=[];let d=fromKey(f),e=fromKey(t);while(d<=e){o.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)}return o};
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const now=new Date();
+const st={tab:"plan",coaches:[],holidays:[],loading:true,
+  addName:"",editingDay:null,editTime:"18:30",editType:"WOD",editLoc:"Central",
+  planCoach:"",planFrom:"",planTo:"",covers:null,saved:false,editingId:null,
+  calY:now.getFullYear(),calM:now.getMonth(),customTypes:[],ntName:"",ntColor:"#217A54",ntDur:""};
+
+// ---------- CLOUD SETUP (optional, makes the board a real shared webpage) ----------
+// Paste your Firebase Realtime Database URL between the quotes, e.g.:
+// const CLOUD_DB_URL="https://cfh-holidays-default-rtdb.europe-west1.firebasedatabase.app";
+const CLOUD_DB_URL="https://cfh-holiday-planning-default-rtdb.europe-west1.firebasedatabase.app";
+
+// ---------- storage adapter: cloud -> shared (Claude artifact) -> localStorage -> memory ----------
+const store=(function(){
+  if(CLOUD_DB_URL){
+    const base=CLOUD_DB_URL.replace(/\/+$/,"");
+    const u=k=>base+"/board/"+encodeURIComponent(k)+".json";
+    return{mode:"cloud",
+      get:async k=>{const r=await fetch(u(k));if(!r.ok)throw new Error("http "+r.status);const v=await r.json();if(v===null)throw new Error("not found");return{key:k,value:v}},
+      set:async(k,v)=>{const r=await fetch(u(k),{method:"PUT",body:JSON.stringify(v)});if(!r.ok)throw new Error("http "+r.status);return{key:k,value:v}},
+      del:async k=>{const r=await fetch(u(k),{method:"DELETE"});if(!r.ok)throw new Error("http "+r.status);return{key:k,deleted:true}},
+      list:async p=>{const r=await fetch(base+"/board.json?shallow=true");if(!r.ok)throw new Error("http "+r.status);const o=await r.json()||{};return{keys:Object.keys(o).map(decodeURIComponent).filter(k=>k.startsWith(p)).map(k=>({key:k}))}}};
+  }
+  try{
+    if(window.storage&&typeof window.storage.get==="function"){
+      return{mode:"shared",
+        get:k=>window.storage.get(k,true),
+        set:(k,v)=>window.storage.set(k,v,true),
+        del:k=>window.storage.delete(k,true),
+        list:p=>window.storage.list(p,true)};
+    }
+  }catch(e){}
+  try{
+    const ls=window.localStorage;ls.setItem("__cfh_t","1");ls.removeItem("__cfh_t");
+    const P="cfhX:";
+    return{mode:"local",
+      get:async k=>{const v=ls.getItem(P+k);if(v===null)throw new Error("not found");return{key:k,value:v}},
+      set:async(k,v)=>{ls.setItem(P+k,v);return{key:k,value:v}},
+      del:async k=>{ls.removeItem(P+k);return{key:k,deleted:true}},
+      list:async p=>{const keys=[];for(let i=0;i<ls.length;i++){const k=ls.key(i);if(k&&k.startsWith(P+p))keys.push({key:k.slice(P.length)})}return{keys}}};
+  }catch(e){}
+  const mem={};
+  return{mode:"memory",
+    get:async k=>{if(!(k in mem))throw new Error("not found");return{key:k,value:mem[k]}},
+    set:async(k,v)=>{mem[k]=v;return{key:k,value:v}},
+    del:async k=>{delete mem[k];return{key:k,deleted:true}},
+    list:async p=>({keys:Object.keys(mem).filter(k=>k.startsWith(p)).map(k=>({key:k}))})};
+})();
+
+async function loadAll(){
+  st.loading=true;render();
+  let coaches=[],holidays=[],ctypes=[];
+  try{const c=await store.get("cfh-coaches");if(c&&c.value)coaches=JSON.parse(c.value)}catch(e){}
+  try{const t=await store.get("cfh-types");if(t&&t.value)ctypes=JSON.parse(t.value)}catch(e){}
+  try{
+    const l=await store.list("cfh-hol:");
+    const keys=(l&&l.keys)||[];
+    const rs=await Promise.all(keys.map(async k=>{try{const r=await store.get(k.key||k);return r?JSON.parse(r.value):null}catch(e){return null}}));
+    holidays=rs.filter(Boolean);
+  }catch(e){}
+  st.coaches=coaches;st.holidays=holidays;st.customTypes=ctypes;st.loading=false;render();
+}
+async function saveCoaches(){try{await store.set("cfh-coaches",JSON.stringify(st.coaches))}catch(e){console.error(e)}}
+async function saveHol(h){try{await store.set("cfh-hol:"+h.id,JSON.stringify(h))}catch(e){console.error(e)}}
+async function delHol(id){try{await store.del("cfh-hol:"+id)}catch(e){console.error(e)}}
+
+const byId=id=>st.coaches.find(c=>c.id===id);
+const onHoliday=(cid,dk)=>st.holidays.some(h=>h.coachId===cid&&h.from<=dk&&dk<=h.to);
+
+// ---------- actions (exposed) ----------
+const A=window._cfh={};
+A.tab=t=>{st.tab=t;render()};
+A.refresh=()=>loadAll();
+A.addName=v=>{st.addName=v};
+A.addCoach=()=>{const n=st.addName.trim();if(!n)return;
+  st.coaches.push({id:uid(),name:n,schedule:Object.fromEntries(DAYS.map(d=>[d,[]]))});
+  st.addName="";saveCoaches();render()};
+A.rmCoach=id=>{if(!confirm("Remove this coach and their schedule?"))return;
+  st.coaches=st.coaches.filter(c=>c.id!==id);saveCoaches();render()};
+A.openAdd=(cid,day)=>{st.editingDay=cid+"|"+day;render()};
+A.closeAdd=()=>{st.editingDay=null;render()};
+A.setTime=v=>{st.editTime=v};
+A.setType=v=>{st.editType=v};
+A.setLoc=v=>{st.editLoc=v};
+A.addClass=(cid,day)=>{const c=byId(cid);if(!c)return;
+  c.schedule[day]=[...c.schedule[day],{time:st.editTime,type:st.editType,loc:st.editLoc}].sort((a,b)=>a.time.localeCompare(b.time));
+  st.editingDay=null;saveCoaches();render()};
+A.rmClass=(cid,day,i)=>{const c=byId(cid);if(!c)return;
+  c.schedule[day]=c.schedule[day].filter((_,j)=>j!==i);saveCoaches();render()};
+A.planCoach=v=>{st.planCoach=v;st.covers=null;render()};
+A.planFrom=v=>{st.planFrom=v;st.covers=null;render()};
+A.planTo=v=>{st.planTo=v;st.covers=null;render()};
+A.compute=()=>{const c=byId(st.planCoach);
+  if(!c||!st.planFrom||!st.planTo||st.planTo<st.planFrom)return;
+  const list=[];
+  for(const d of eachDay(st.planFrom,st.planTo)){const k=toKey(d);
+    for(const cl of c.schedule[dayName(d)]||[])list.push({date:k,time:cl.time,type:cl.type,loc:cl.loc||"",subId:""})}
+  st.covers=list;st.saved=false;render()};
+A.assignAll=v=>{if(!v||!st.covers)return;st.covers=st.covers.map(c=>({...c,subId:v}));render()};
+A.assignOne=(i,v)=>{st.covers[i].subId=v;render()};
+A.saveHoliday=async()=>{const h={id:st.editingId||uid(),coachId:st.planCoach,from:st.planFrom,to:st.planTo,covers:st.covers||[]};
+  await saveHol(h);st.holidays=st.holidays.filter(x=>x.id!==h.id).concat([h]);
+  st.covers=null;st.planFrom="";st.planTo="";st.editingId=null;st.saved=true;render()};
+A.editHoliday=id=>{const h=st.holidays.find(x=>x.id===id);if(!h)return;
+  st.editingId=h.id;st.planCoach=h.coachId;st.planFrom=h.from;st.planTo=h.to;
+  st.covers=(h.covers||[]).map(c=>({...c}));st.saved=false;st.tab="plan";render()};
+A.cancelEdit=()=>{st.editingId=null;st.covers=null;st.planFrom="";st.planTo="";render()};
+A.deleteHoliday=async id=>{if(!confirm("Delete this holiday?"))return;
+  await delHol(id);st.holidays=st.holidays.filter(h=>h.id!==id);render()};
+A.ntName=v=>{st.ntName=v};
+A.ntColor=v=>{st.ntColor=v};
+A.ntDur=v=>{st.ntDur=v};
+A.addType=async()=>{const n=st.ntName.trim();if(!n)return;
+  if(allTypes().some(t=>t.name.toLowerCase()===n.toLowerCase())){alert("A class type with this name already exists.");return}
+  const t={name:n,color:st.ntColor};const d=parseInt(st.ntDur,10);if(d>0)t.dur=d;
+  st.customTypes=(st.customTypes||[]).concat([t]);st.ntName="";st.ntDur="";
+  try{await store.set("cfh-types",JSON.stringify(st.customTypes))}catch(e){console.error(e)}
+  render()};
+A.rmType=async n=>{if(!confirm("Remove class type "+n+"? Classes already scheduled keep the name but lose the custom colour."))return;
+  st.customTypes=(st.customTypes||[]).filter(t=>t.name!==n);
+  try{await store.set("cfh-types",JSON.stringify(st.customTypes))}catch(e){console.error(e)}
+  render()};
+A.calMove=d=>{let m=st.calM+d,y=st.calY;if(m<0){m=11;y--}if(m>11){m=0;y++}st.calM=m;st.calY=y;render()};
+
+// ---------- views ----------
+function vTeam(){
+  let h='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">'
+    +'<input placeholder="Coach name" value="'+esc(st.addName)+'" style="width:220px" '
+    +'oninput="_cfh.addName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addCoach()">'
+    +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.addCoach()">ADD COACH</button>'
+    +'<span class="muted">Each coach fills their own slot with their weekly classes.</span></div>';
+  if(!st.coaches.length)h+='<p class="muted center">No coaches yet &mdash; add the team above to get started.</p>';
+  for(const c of st.coaches){
+    const tot=DAYS.reduce((n,d)=>n+c.schedule[d].length,0);
+    h+='<section class="card"><div class="card-h"><h3 class="disp">'+esc(c.name)+'</h3>'
+      +'<div style="display:flex;gap:12px;align-items:center"><span style="color:#9AA0A6;font-size:11px">'+tot+' classes / week</span>'
+      +'<button class="ghost" style="color:var(--hol)" onclick="_cfh.rmCoach(\''+c.id+'\')">remove</button></div></div><div class="week">';
+    for(const d of DAYS){
+      h+='<div><div class="dayname">'+d+'</div><div class="stack">';
+      c.schedule[d].forEach((cl,i)=>{
+        h+='<span class="chip" style="'+chipStyle(cl.type)+'">'+esc(tlabel(cl.time,cl.type))
+          +(cl.loc?'<span class="loc'+(cl.loc==="Airport"?' air':'')+'">'+(cl.loc==="Airport"?"AIR":"CEN")+'</span>':'')
+          +'<button onclick="_cfh.rmClass(\''+c.id+'\',\''+d+'\','+i+')" aria-label="Remove class">&times;</button></span>';
+      });
+      if(st.editingDay===c.id+"|"+d){
+        h+='<select onchange="_cfh.setTime(this.value)">'+TIMES.map(t=>'<option'+(t===st.editTime?' selected':'')+'>'+t+'</option>').join("")+'</select>'
+          +'<select onchange="_cfh.setType(this.value)">'+allTypes().map(t=>'<option'+(t.name===st.editType?' selected':'')+'>'+esc(t.name)+'</option>').join("")+'</select>'
+          +'<select onchange="_cfh.setLoc(this.value)">'+LOCS.map(t=>'<option'+(t===st.editLoc?' selected':'')+'>'+t+'</option>').join("")+'</select>'
+          +'<div style="display:flex;gap:6px"><button class="btn" style="background:var(--cov);color:#fff;font-size:11px;padding:3px 10px" onclick="_cfh.addClass(\''+c.id+'\',\''+d+'\')">Add</button>'
+          +'<button class="ghost" onclick="_cfh.closeAdd()">Cancel</button></div>';
+      }else{
+        h+='<button class="ghost" onclick="_cfh.openAdd(\''+c.id+'\',\''+d+'\')">+ class</button>';
+      }
+      h+='</div></div>';
+    }
+    h+='</div></section>';
+  }
+  return h;
+}
+
+function vPlan(){
+  if(!st.coaches.length)return '<p class="muted center">First set up the team: <a href="#" onclick="_cfh.tab(\'team\');return false"><b>add coaches and their weekly hours</b></a>.</p>';
+  const others=st.coaches.filter(c=>c.id!==st.planCoach);
+  let h='<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px">'
+    +'<label><span class="lb">Coach</span><select onchange="_cfh.planCoach(this.value)"><option value="">Select...</option>'
+    +st.coaches.map(c=>'<option value="'+c.id+'"'+(c.id===st.planCoach?' selected':'')+'>'+esc(c.name)+'</option>').join("")+'</select></label>'
+    +'<label><span class="lb">From</span><input type="date" value="'+st.planFrom+'" onchange="_cfh.planFrom(this.value)"></label>'
+    +'<label><span class="lb">To</span><input type="date" value="'+st.planTo+'" onchange="_cfh.planTo(this.value)"></label>'
+    +'<button class="btn disp" style="background:var(--hol);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.compute()">SHOW MY CLASSES</button>'
+    +(st.saved?'<span style="color:var(--cov);font-weight:600;font-size:13px">Holiday saved &#10003;</span>':'')
+    +'</div>';
+  if(st.covers){
+    h+='<div class="panel">';
+    if(st.editingId)h+='<div style="font-size:12px;font-weight:700;color:var(--hol);margin-bottom:6px">EDITING BOOKED HOLIDAY &mdash; change the assignments below, then update.</div>';
+    const saveLbl=st.editingId?"UPDATE HOLIDAY":"SAVE HOLIDAY";
+    const cancelBtn=st.editingId?'<button class="ghost" style="margin-left:10px" onclick="_cfh.cancelEdit()">cancel</button>':'';
+    if(!st.covers.length){
+      h+='<p style="font-size:13px;margin:0 0 8px">No scheduled classes in this period &mdash; nothing to cover.</p>'
+        +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 18px" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancelBtn;
+    }else{
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'
+        +'<b style="font-size:13px">'+st.covers.length+' classes need cover:</b>'
+        +'<label class="muted" style="display:flex;align-items:center;gap:6px">One click &mdash; assign all to: '
+        +'<select onchange="_cfh.assignAll(this.value)"><option value="">choose...</option>'
+        +others.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("")+'</select></label></div><div class="covers">';
+      st.covers.forEach((cv,i)=>{
+        const busy=cv.subId&&onHoliday(cv.subId,cv.date);
+        h+='<div class="cover'+(busy?' bad':'')+'"><div style="font-size:11px"><div><b>'+fmtShort(cv.date)+'</b></div>'
+          +'<span class="chip" style="'+chipStyle(cv.type)+'">'+esc(tlabel(cv.time,cv.type))
+          +(cv.loc?'<span class="loc'+(cv.loc==="Airport"?' air':'')+'">'+(cv.loc==="Airport"?"AIR":"CEN")+'</span>':'')+'</span></div>'
+          +'<div style="text-align:right"><select style="font-size:11px;padding:3px 4px" onchange="_cfh.assignOne('+i+',this.value)">'
+          +'<option value="">needs cover</option>'
+          +others.map(c=>'<option value="'+c.id+'"'+(c.id===cv.subId?' selected':'')+'>'+esc(c.name)+'</option>').join("")
+          +'</select>'+(busy?'<div style="color:var(--err);font-size:10px;font-weight:700;margin-top:2px">on holiday!</div>':'')+'</div></div>';
+      });
+      h+='</div><div style="margin-top:12px"><button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 20px" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancelBtn
+        +'<span class="muted" style="margin-left:12px">You can save with some classes still marked "needs cover" and fix them later with the edit button.</span></div>';
+    }
+    h+='</div>';
+  }
+  h+='<h3 class="disp" style="font-size:24px;margin:22px 0 8px">BOOKED HOLIDAYS</h3>';
+  const list=st.holidays.slice().sort((a,b)=>a.from.localeCompare(b.from));
+  if(!list.length)h+='<p class="muted">Nothing booked yet.</p>';
+  for(const hh of list){
+    const open=(hh.covers||[]).filter(c=>!c.subId).length;
+    const subs=[...new Set((hh.covers||[]).map(c=>c.subId).filter(Boolean))].map(id=>{const c=byId(id);return c?c.name:null}).filter(Boolean);
+    h+='<div class="row"><b style="width:110px">'+esc((byId(hh.coachId)||{}).name||"?")+'</b>'
+      +'<span>'+fmtShort(hh.from)+' &rarr; '+fmtShort(hh.to)+'</span>'
+      +'<span class="muted">'+(hh.covers||[]).length+' classes</span>'
+      +(subs.length?'<span style="color:var(--cov);font-size:11px">covered by '+esc(subs.join(", "))+'</span>':'')
+      +(open?'<span style="color:var(--hol);font-size:11px;font-weight:700">'+open+' still need cover</span>':'')
+      +'<button class="ghost" style="margin-left:auto;color:var(--ink);font-weight:600" onclick="_cfh.editHoliday(\''+hh.id+'\')">edit</button>'
+      +'<button class="ghost" onclick="_cfh.deleteHoliday(\''+hh.id+'\')">delete</button></div>';
+  }
+  return h;
+}
+
+function vCal(){
+  if(!st.coaches.length)return '<p class="muted center">Add the team first &mdash; the calendar builds itself.</p>';
+  const nd=new Date(st.calY,st.calM+1,0).getDate();
+  const days=Array.from({length:nd},(_,i)=>new Date(st.calY,st.calM,i+1));
+  const cell=(cid,dk)=>{
+    for(const h of st.holidays)if(h.coachId===cid&&h.from<=dk&&dk<=h.to)return{m:"F",t:"On holiday"};
+    for(const h of st.holidays){
+      const mine=(h.covers||[]).filter(c=>c.subId===cid&&c.date===dk);
+      if(mine.length){const o=byId(h.coachId);return{m:"S",t:mine.map(c=>c.time+" "+c.type+(c.loc?" @ "+c.loc:"")+" for "+(o?o.name:"?")).join(" &middot; ")}}
+    }
+    return null;
+  };
+  let h='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'
+    +'<button class="btn" style="border:1px solid #C8C8C0;background:#fff;padding:4px 10px" onclick="_cfh.calMove(-1)">&larr;</button>'
+    +'<h3 class="disp" style="font-size:24px;width:190px;text-align:center;margin:0">'+MONTHS[st.calM]+' '+st.calY+'</h3>'
+    +'<button class="btn" style="border:1px solid #C8C8C0;background:#fff;padding:4px 10px" onclick="_cfh.calMove(1)">&rarr;</button>'
+    +'<span style="font-size:11px;display:flex;gap:8px;align-items:center;margin-left:10px">'
+    +'<span class="chip" style="background:var(--hol)">F</span> on holiday '
+    +'<span class="chip" style="background:var(--cov)">S</span> covering (hover for details)</span></div>'
+    +'<div style="overflow-x:auto"><table class="cal"><thead><tr><th class="sticky">Coach</th>';
+  for(const d of days){
+    const w=d.getDay()===0||d.getDay()===6;
+    h+='<th style="padding:2px'+(w?';background:#ECECE6':'')+'"><div style="color:#AAA">'+dayName(d)[0]+'</div><div><b>'+d.getDate()+'</b></div></th>';
+  }
+  h+='</tr></thead><tbody>';
+  st.coaches.forEach((c,ci)=>{
+    const bg=ci%2?'#FAFAF6':'#fff';
+    h+='<tr style="background:'+bg+'"><td class="sticky" style="background:'+bg+'">'+esc(c.name)+'</td>';
+    for(const d of days){
+      const k=toKey(d),v=cell(c.id,k),w=d.getDay()===0||d.getDay()===6;
+      const b=v?(v.m==="F"?"var(--hol)":"var(--cov)"):(w?"#F1F1EB":"transparent");
+      h+='<td title="'+esc(v?v.t:"")+'" style="background:'+b+(v?';color:#fff;font-weight:700;cursor:help':'')+'">'+(v?v.m:"")+'</td>';
+    }
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function vSettings(){
+  let h='<h3 class="disp" style="font-size:24px;margin:0 0 4px">CLASS TYPES</h3>'
+    +'<p class="muted" style="margin:0 0 12px">Add your own class types: they appear in every dropdown for the whole team. Optional duration shows on the chip (e.g. 30&#39;).</p>'
+    +'<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:16px">'
+    +'<label><span class="lb">Name</span><input placeholder="e.g. Mobility" value="'+esc(st.ntName)+'" style="width:160px" oninput="_cfh.ntName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addType()"></label>'
+    +'<label><span class="lb">Colour</span><input type="color" value="'+st.ntColor+'" style="width:52px;height:34px;padding:2px" onchange="_cfh.ntColor(this.value)"></label>'
+    +'<label><span class="lb">Duration (min, optional)</span><input type="number" min="5" step="5" value="'+esc(st.ntDur)+'" style="width:90px" oninput="_cfh.ntDur(this.value)"></label>'
+    +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.addType()">ADD TYPE</button></div>';
+  h+='<div class="dayname">Built-in</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">'
+    +BUILTIN.map(t=>'<span class="chip" style="'+chipStyle(t.name)+'">'+esc(t.name+(t.dur?" "+t.dur+"\u0027":""))+'</span>').join("")+'</div>';
+  h+='<div class="dayname">Custom (editable)</div>';
+  if(!(st.customTypes||[]).length)h+='<p class="muted">No custom types yet.</p>';
+  else h+='<div style="display:flex;flex-wrap:wrap;gap:6px">'
+    +st.customTypes.map(t=>'<span class="chip" style="'+chipStyle(t.name)+'">'+esc(t.name+(t.dur?" "+t.dur+"\u0027":""))
+    +'<button onclick="_cfh.rmType(\''+esc(t.name)+'\')" aria-label="Remove type">&times;</button></span>').join("")+'</div>';
+  return h;
+}
+
+function render(){
+  const tabs=[["plan","PLAN HOLIDAY"],["calendar","CALENDAR"],["team","TEAM & HOURS"],["settings","SETTINGS"]];
+  const note=store.mode==="cloud"
+    ?'<p style="color:#7BD88F">LIVE shared board &mdash; anyone with the link can view and edit. Hit Refresh to load changes from others.</p>'
+    :store.mode==="shared"
+    ?'<p>Shared with the whole team &mdash; everyone sees the same board.</p>'
+    :store.mode==="local"
+    ?'<p style="color:#F5C542">Saved on THIS device only (browser storage). Open the board inside Claude to share it with the team.</p>'
+    :'<p style="color:#FF7B6B">WARNING: no storage available &mdash; data will be lost when you close or refresh.</p>';
+  let h='<header><div><h1 class="disp">CFH HOLIDAY BOARD</h1>'+note+'</div>'
+    +'<button class="btn btn-dark" onclick="_cfh.refresh()">'+(st.loading?"Loading...":"Refresh")+'</button></header>'
+    +'<nav class="tabs">'+tabs.map(([k,l])=>'<button class="tab disp'+(st.tab===k?' on':'')+'" onclick="_cfh.tab(\''+k+'\')">'+l+'</button>').join("")+'</nav>'
+    +'<main>'+(st.loading?'<p class="muted center">Loading the board...</p>':(st.tab==="team"?vTeam():st.tab==="plan"?vPlan():st.tab==="settings"?vSettings():vCal()))+'</main>';
+  document.getElementById("app").innerHTML=h;
+}
+
+render();
+loadAll();
+
+})();
+</script>
