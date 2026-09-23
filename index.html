@@ -1,51 +1,204 @@
-<div id="app"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0C">
+<title>CFH Holiday Board</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230A0A0C%22%2F%3E%3Csvg%20x%3D%227%22%20y%3D%2210%22%20width%3D%2250%22%20height%3D%2244%22%20viewBox%3D%220%2066%20500%20368%22%3E%3Cpath%20fill%3D%22%23FAFAFA%22%20d%3D%22M%20461.62%20357.37%20C%20453.14%20363.06%20405.37%20411.57%20415.72%20342.15%20C%20418.76%20321.75%20419.45%20305.62%20417.84%20292.87%20C%20415.62%20275.39%20408.79%20262.49%20397.51%20254.51%20C%20385.93%20246.32%20371.02%20244.29%20353.18%20248.47%20C%20345.98%20250.16%20338.14%20252.84%20329.25%20256.68%20L%20339.39%20192.34%20C%20344.79%20157.87%20294.46%20152.47%20289.14%20186.33%20L%20273.32%20286.69%20C%20263.95%20292.27%20254.23%20298.18%20244.27%20304.25%20C%20234.66%20310.1%20224.73%20316.14%20214.61%20322.2%20C%20206.61%20326.98%20198.87%20331.71%20191.38%20336.3%20L%20204.69%20253.67%20L%20243.3%20253.67%20C%20256.67%20253.67%20267.5%20242.83%20267.5%20229.46%20C%20267.5%20216.09%20256.67%20205.26%20243.3%20205.26%20L%20212.5%20205.26%20L%20220.94%20152.83%20C%20223.73%20136.27%20240.54%20120.89%20256.86%20121.75%20C%20278.83%20122.91%20274.94%20141.49%20296.48%20145.04%20C%20313.12%20147.78%20337.46%20127.43%20310.18%2095.05%20C%20303.75%2087.43%20295.84%2081.45%20286.65%2077.3%20C%20277.45%2073.14%20267.43%2071.04%20256.86%2071.04%20C%20215.68%2071.04%20178.01%20103.25%20171.09%20144.39%20L%20134.96%20368.59%20C%20134.96%20368.6%20134.96%20368.61%20134.95%20368.62%20C%20116.29%20377.61%2099.96%20382.45%2086.84%20379.65%20C%2072.29%20376.55%2062.13%20368.72%2055.79%20355.73%20C%2049.2%20342.2%2046.95%20323.79%2049.3%20302.51%20C%2051.55%20282.07%2056.69%20265.75%2062.8%20253.67%20C%2070.97%20237.52%2093.61%20214.12%20102.14%20249.59%20C%20109.62%20280.72%20145.22%20269.28%20145.55%20242.29%20C%20145.58%20240.05%20145.49%20228.25%20141.11%20215.43%20C%20126.04%20171.36%2069.53%20165.71%2033.3%20212.1%20C%2016.23%20233.94%204.83%20264.16%201.18%20297.19%20C%20-2.18%20327.59%201.66%20355.17%2012.28%20376.95%20C%2025.2%20403.45%2047.5%20420.76%2076.75%20427%20C%2082.75%20428.28%2088.75%20428.88%2094.79%20428.88%20C%20132.87%20428.88%20171.89%20404.99%20216.12%20377.91%20C%20223.68%20373.29%20231.48%20368.51%20239.45%20363.75%20C%20247.64%20358.86%20255.64%20354%20263.45%20349.25%20L%20255.49%20399.74%20C%20253.08%20415.09%20264.95%20428.96%20280.48%20428.96%20C%20292.95%20428.96%20303.55%20419.89%20305.48%20407.58%20L%20319.97%20315.59%20C%20323.5%20313.61%20326.92%20311.74%20330.22%20309.99%20C%20359.57%20294.44%20373.21%20298.98%20367.84%20335.01%20C%20363.99%20360.84%20360.01%20387.55%20375.13%20407.77%20C%20383.59%20419.07%20396.45%20425.98%20413.34%20428.33%20C%20416.2%20428.73%20419.07%20428.93%20421.97%20428.93%20C%20434.22%20428.93%20446.88%20425.4%20459.71%20418.39%20C%20469.61%20412.99%20484.01%20403%20493.32%20391.66%20C%20512.21%20368.66%20487.68%20339.9%20461.62%20357.37%22%2F%3E%3C%2Fsvg%3E%3C%2Fsvg%3E">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-  :root{
-    --ink:#16181D; --board:#F4F4F0; --line:#DDDDD6; --line2:#E4E4DC;
-    --hol:#FF5A1F; --cov:#3E9B4F; --mut:#5B6770; --err:#E5484D;
-  }
-  #app{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--board);color:var(--ink);min-height:100vh}
-  .disp{font-family:'Bebas Neue','Arial Narrow',sans-serif;letter-spacing:.04em}
-  header{background:var(--ink);padding:12px 16px;display:flex;justify-content:space-between;align-items:flex-end}
-  header h1{color:#fff;font-size:30px;line-height:1;margin:0}
-  header p{color:#9AA0A6;font-size:11px;margin:4px 0 0}
-  .btn{border:0;border-radius:6px;cursor:pointer;font-weight:600}
-  .btn-dark{background:#2A2E36;color:#E8E8E4;font-size:12px;padding:7px 14px}
-  .tabs{display:flex;gap:4px;padding:12px 16px 0}
-  .tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:18px;border:0;cursor:pointer;background:#DDDDD6;color:var(--mut)}
-  .tab.on{background:#fff;color:var(--ink)}
-  main{background:#fff;margin:0 16px 24px;border-radius:0 8px 8px 8px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:16px}
-  .chip{display:inline-flex;align-items:center;gap:4px;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:600;color:#fff}
-  .chip button{background:none;border:0;color:inherit;opacity:.7;cursor:pointer;padding:0;font-size:12px}
-  .chip button:hover{opacity:1}
-  .loc{background:#D7263D;color:#fff;border-radius:3px;padding:0 3px;font-size:9px;letter-spacing:.05em}
-  .loc.air{background:#0B0C0E;box-shadow:0 0 0 1px rgba(255,255,255,.55)}
-  input,select{border:1px solid #C8C8C0;border-radius:6px;padding:6px 8px;font-size:13px;background:#fff}
-  label span.lb{display:block;font-size:11px;font-weight:700;color:#888;margin-bottom:3px}
-  .card{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
-  .card-h{background:var(--ink);display:flex;justify-content:space-between;align-items:center;padding:8px 12px}
-  .card-h h3{color:#fff;font-size:20px;margin:0}
-  .week{display:grid;grid-template-columns:repeat(7,1fr)}
-  .week>div{padding:8px;min-height:96px;border-left:1px solid #EEE}
-  .week>div:first-child{border-left:0}
-  .dayname{font-size:11px;font-weight:700;color:#888;margin-bottom:4px}
-  .stack{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-  .ghost{background:none;border:0;color:#AAA;font-size:11px;cursor:pointer;padding:0;text-align:left}
-  .ghost:hover{color:var(--ink)}
-  .panel{margin-top:16px;border:1px solid var(--line);background:#FBFBF8;border-radius:10px;padding:12px}
-  .covers{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));margin-top:8px}
-  .cover{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid var(--line2);border-radius:6px;padding:6px 8px}
-  .cover.bad{border-color:var(--err)}
-  .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:6px;padding:8px 12px;font-size:13px;margin-bottom:6px}
-  table.cal{border-collapse:collapse;font-size:11px}
-  table.cal th,table.cal td{text-align:center}
-  table.cal td{border:1px solid #EFEFE8;width:24px;height:22px;min-width:24px}
-  .sticky{position:sticky;left:0;background:#fff;text-align:left!important;padding-right:8px;font-weight:600;white-space:nowrap;min-width:110px}
-  .muted{color:#888;font-size:12px}
-  .center{text-align:center;padding:24px 0}
-  @media(max-width:720px){.week{grid-template-columns:repeat(2,1fr)}.week>div{border-left:0;border-top:1px solid #EEE}}
+:root{
+  --bg:#0A0A0C;--s1:#141417;--s2:#1B1B1F;--s3:#232328;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --t1:#FAFAFA;--t2:#A1A1AA;--t3:#52525B;
+  --lime1:#A3E635;--lime2:#65A30D;--cyan1:#22D3EE;--cyan2:#0891B2;--amb1:#FBBF24;--amb2:#D97706;
+  --err:#F87171;
+  --ease:cubic-bezier(.4,0,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--t1);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+#app{max-width:1400px;margin:0 auto;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(64px + env(safe-area-inset-bottom,0px))}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cyan1);outline-offset:2px}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.logo{height:44px;width:auto;color:var(--t1);flex:none}
+.brand h1{font-size:28px;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.1}
+.brand p{margin:4px 0 0;color:var(--t2);font-size:13px}
+.top-r{display:flex;align-items:center;gap:8px}
+.status{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--s1);font-size:13px;color:var(--t2)}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--lime1);box-shadow:0 0 0 3px rgba(163,230,53,.15)}
+.status.warn i{background:var(--amb1);box-shadow:0 0 0 3px rgba(251,191,36,.15)}
+.status.bad i{background:var(--err);box-shadow:0 0 0 3px rgba(248,113,113,.15)}
+.status.shared i{background:var(--cyan1);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+
+/* tabs */
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:999px;background:var(--s1);border:1px solid var(--line);margin-bottom:24px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:8px 16px;border-radius:999px;color:var(--t2);cursor:pointer;white-space:nowrap;font-size:14px;transition:background .2s var(--ease),color .2s var(--ease)}
+.tab:hover{color:var(--t1)}
+.tab.on{background:var(--s3);color:var(--t1);box-shadow:inset 0 0 0 1px var(--line2)}
+
+/* surfaces */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:24px}
+.pad{padding:24px}
+.stack>*+*{margin-top:16px}
+.h2{font-size:20px;font-weight:500;letter-spacing:-.01em;margin:0}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);font-weight:600}
+.muted{color:var(--t2);font-size:14px}
+.divider{height:1px;background:var(--line);margin:24px 0}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:16px}
+.stat{padding:24px;display:flex;align-items:center;gap:20px;min-width:0}
+.stat .body{min-width:0}
+.num{font-size:56px;font-weight:600;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:8px 0 6px;-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-lime{background-image:linear-gradient(135deg,var(--lime1),var(--lime2))}
+.g-amb{background-image:linear-gradient(135deg,var(--amb1),var(--amb2))}
+.g-cyan{background-image:linear-gradient(135deg,var(--cyan1),var(--cyan2))}
+.det{color:var(--t2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ring{flex:none}
+.ring.anim .arc{animation:ringIn .9s var(--ease) both}
+@keyframes ringIn{from{stroke-dashoffset:var(--c)}}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.input,.select{height:40px;padding:0 12px;border-radius:12px;background:var(--s2);border:1px solid var(--line2);color:var(--t1);min-width:0}
+.select{padding-right:8px}
+.input:focus,.select:focus{border-color:rgba(34,211,238,.6);outline:none;box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+input[type=color].input{width:52px;padding:4px;cursor:pointer}
+.form{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px}
+.form .field{flex:1 1 160px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-weight:500;font-size:14px;white-space:nowrap;transition:background .2s var(--ease),border-color .2s var(--ease),opacity .2s var(--ease)}
+.btn-primary{background:var(--t1);color:#0A0A0C}
+.btn-primary:hover{background:#E4E4E7}
+.btn-ghost{background:transparent;border-color:var(--line2);color:var(--t1)}
+.btn-ghost:hover{background:var(--s2)}
+.btn-sm{height:32px;padding:0 12px;font-size:13px;border-radius:10px}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;border:1px solid transparent;background:none;color:var(--t2);cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease)}
+.iconbtn:hover{background:var(--s2);color:var(--t1)}
+.iconbtn.danger:hover{color:var(--err)}
+.link{background:none;border:0;padding:0;color:var(--t2);cursor:pointer;font-size:13px}
+.link:hover{color:var(--t1)}
+.ok{display:inline-flex;align-items:center;gap:6px;color:var(--lime1);font-size:14px;margin-top:16px}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:28px;padding:0 10px;border-radius:999px;background:var(--s3);border:1px solid var(--line);font-size:12px;font-weight:500;color:var(--t1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
+.chip .x{display:inline-flex;background:none;border:0;padding:0;margin-right:-4px;color:var(--t3);cursor:pointer}
+.chip .x:hover{color:var(--t1)}
+.chip .x .ic{width:14px;height:14px}
+.loc{font-size:10px;font-weight:600;letter-spacing:.06em;padding:2px 6px;border-radius:6px}
+.loc.cen{color:#FDA4AF;background:rgba(244,63,94,.14)}
+.loc.air{color:var(--t2);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--line2)}
+
+/* covers */
+.cov-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.covers{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.cover{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 12px 12px 16px;border-radius:16px;background:var(--s2);border:1px solid var(--line)}
+.cover.bad{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.06)}
+.cover .when{font-size:13px;font-weight:600;margin-bottom:6px}
+.cover .select{height:34px;font-size:13px;border-radius:10px;max-width:150px}
+.warn-note{display:flex;align-items:center;gap:4px;color:var(--err);font-size:11px;font-weight:600;margin-top:4px;justify-content:flex-end}
+.warn-note .ic{width:12px;height:12px}
+.foot{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:20px}
+
+/* holiday rows */
+.hlist{display:flex;flex-direction:column;gap:8px}
+.hrow{display:grid;grid-template-columns:minmax(0,1.4fr) auto minmax(0,1.2fr) auto;align-items:center;gap:16px;padding:12px 12px 12px 16px;border-radius:16px;background:var(--s2);border:1px solid var(--line)}
+.hrow.past{opacity:.5}
+.who{display:flex;align-items:center;gap:12px;min-width:0}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--s3);border:1px solid var(--line2);font-size:12px;font-weight:600;color:var(--t2);flex:none;letter-spacing:.02em}
+.nm{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rng{color:var(--t2);font-size:13px;font-variant-numeric:tabular-nums}
+.cnt{color:var(--t2);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cnt b{color:var(--t1);font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.pill.good{color:var(--lime1);background:rgba(163,230,53,.1)}
+.pill.open{color:var(--amb1);background:rgba(251,191,36,.12)}
+.pill.none{color:var(--t2);background:rgba(255,255,255,.05)}
+.acts{display:flex;gap:2px}
+
+/* calendar */
+.cal-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.month{display:flex;align-items:center;gap:8px}
+.month h2{min-width:170px;text-align:center}
+.legend{display:flex;gap:16px;color:var(--t2);font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:4px}
+.scroll{overflow-x:auto;margin:0 -24px;padding:0 24px}
+table.cal{border-collapse:separate;border-spacing:3px;font-size:12px;font-variant-numeric:tabular-nums}
+table.cal th{font-weight:500;color:var(--t3);padding:4px 0 8px;text-align:center;min-width:28px}
+table.cal th .d{display:block;color:var(--t2);font-size:13px;font-weight:600}
+table.cal th.today .d{color:var(--cyan1)}
+table.cal th.today{box-shadow:inset 0 -2px 0 var(--cyan1)}
+table.cal td{width:28px;height:30px;text-align:center;border-radius:8px;background:rgba(255,255,255,.025);font-weight:700;font-size:11px}
+table.cal td.we{background:rgba(255,255,255,.055)}
+table.cal td.f{background:linear-gradient(135deg,var(--amb1),var(--amb2));color:#1a1204;cursor:help}
+table.cal td.s{background:linear-gradient(135deg,var(--lime1),var(--lime2));color:#111a04;cursor:help}
+table.cal .who-c{position:sticky;left:0;z-index:1;background:var(--s1);text-align:left;padding-right:12px;font-weight:500;font-size:13px;white-space:nowrap;min-width:130px;color:var(--t1)}
+
+/* team */
+.coaches{display:flex;flex-direction:column;gap:16px}
+.coach-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--line)}
+.coach-h .h2{font-size:18px}
+.coach-h .sub{color:var(--t2);font-size:13px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.day{padding:16px 12px;min-height:120px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.day:first-child{border-left:0}
+.day .lbl{margin-bottom:4px}
+.addform{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:4px}
+.addform .select{height:34px;font-size:13px;border-radius:10px;width:100%}
+.addform .row{display:flex;gap:6px}
+.add-cls{display:inline-flex;align-items:center;gap:4px;background:none;border:1px dashed var(--line2);border-radius:999px;height:28px;padding:0 10px;color:var(--t3);cursor:pointer;font-size:12px}
+.add-cls:hover{color:var(--t1);border-color:var(--t3)}
+.add-cls .ic{width:12px;height:12px}
+
+/* settings */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* empty + skeleton */
+.empty{padding:48px 24px;text-align:center;color:var(--t2)}
+.empty .h2{color:var(--t1);margin-bottom:8px}
+.empty .btn{margin-top:16px}
+.sk{border-radius:24px;background:var(--s1);border:1px solid var(--line);height:140px;animation:pulse 1.4s var(--ease) infinite}
+@keyframes pulse{50%{opacity:.55}}
+
+@media (max-width:900px){
+  .stats{grid-template-columns:1fr}
+  .hrow{grid-template-columns:minmax(0,1fr) auto;row-gap:10px}
+  .hrow .cnt{grid-column:2;grid-row:1;text-align:right}
+  .hrow .pill-w{grid-column:1}
+  .hrow .acts{grid-column:2;justify-content:flex-end}
+  .week{grid-template-columns:1fr}
+  .day{border-left:0;border-top:1px solid var(--line);min-height:0;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 20px}
+  .day:first-child{border-top:0}
+  .day .lbl{width:44px;margin:0}
+  .addform{flex-basis:100%}
+}
+@media (max-width:560px){
+  #app{padding-left:16px;padding-right:16px}
+  .top{align-items:flex-start}
+  .brand h1{font-size:24px}
+  .logo{height:36px}
+  .status span{display:none}
+  .pad,.stat{padding:20px}
+  .num{font-size:48px}
+  .scroll{margin:0 -20px;padding:0 20px}
+  .form .field{flex-basis:100%}
+  .form .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
+</head>
+<body>
+<div id="app"></div>
 <script>
 (function(){
 const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -193,170 +346,244 @@ A.rmType=async n=>{if(!confirm("Remove class type "+n+"? Classes already schedul
   render()};
 A.calMove=d=>{let m=st.calM+d,y=st.calY;if(m<0){m=11;y--}if(m>11){m=0;y++}st.calM=m;st.calY=y;render()};
 
+const LOGO='<svg class="logo" viewBox="0 66 500 368" role="img" aria-label="CrossFit Hofplein"><path fill="currentColor" d="M 461.62 357.37 C 453.14 363.06 405.37 411.57 415.72 342.15 C 418.76 321.75 419.45 305.62 417.84 292.87 C 415.62 275.39 408.79 262.49 397.51 254.51 C 385.93 246.32 371.02 244.29 353.18 248.47 C 345.98 250.16 338.14 252.84 329.25 256.68 L 339.39 192.34 C 344.79 157.87 294.46 152.47 289.14 186.33 L 273.32 286.69 C 263.95 292.27 254.23 298.18 244.27 304.25 C 234.66 310.1 224.73 316.14 214.61 322.2 C 206.61 326.98 198.87 331.71 191.38 336.3 L 204.69 253.67 L 243.3 253.67 C 256.67 253.67 267.5 242.83 267.5 229.46 C 267.5 216.09 256.67 205.26 243.3 205.26 L 212.5 205.26 L 220.94 152.83 C 223.73 136.27 240.54 120.89 256.86 121.75 C 278.83 122.91 274.94 141.49 296.48 145.04 C 313.12 147.78 337.46 127.43 310.18 95.05 C 303.75 87.43 295.84 81.45 286.65 77.3 C 277.45 73.14 267.43 71.04 256.86 71.04 C 215.68 71.04 178.01 103.25 171.09 144.39 L 134.96 368.59 C 134.96 368.6 134.96 368.61 134.95 368.62 C 116.29 377.61 99.96 382.45 86.84 379.65 C 72.29 376.55 62.13 368.72 55.79 355.73 C 49.2 342.2 46.95 323.79 49.3 302.51 C 51.55 282.07 56.69 265.75 62.8 253.67 C 70.97 237.52 93.61 214.12 102.14 249.59 C 109.62 280.72 145.22 269.28 145.55 242.29 C 145.58 240.05 145.49 228.25 141.11 215.43 C 126.04 171.36 69.53 165.71 33.3 212.1 C 16.23 233.94 4.83 264.16 1.18 297.19 C -2.18 327.59 1.66 355.17 12.28 376.95 C 25.2 403.45 47.5 420.76 76.75 427 C 82.75 428.28 88.75 428.88 94.79 428.88 C 132.87 428.88 171.89 404.99 216.12 377.91 C 223.68 373.29 231.48 368.51 239.45 363.75 C 247.64 358.86 255.64 354 263.45 349.25 L 255.49 399.74 C 253.08 415.09 264.95 428.96 280.48 428.96 C 292.95 428.96 303.55 419.89 305.48 407.58 L 319.97 315.59 C 323.5 313.61 326.92 311.74 330.22 309.99 C 359.57 294.44 373.21 298.98 367.84 335.01 C 363.99 360.84 360.01 387.55 375.13 407.77 C 383.59 419.07 396.45 425.98 413.34 428.33 C 416.2 428.73 419.07 428.93 421.97 428.93 C 434.22 428.93 446.88 425.4 459.71 418.39 C 469.61 412.99 484.01 403 493.32 391.66 C 512.21 368.66 487.68 339.9 461.62 357.37"/></svg>';
+// ---------- icons (lucide paths) ----------
+const IC={
+  refresh:'<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  left:'<path d="m15 18-6-6 6-6"/>',
+  right:'<path d="m9 18 6-6-6-6"/>',
+  edit:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  trash:'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>'
+};
+const ic=n=>'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+IC[n]+'</svg>';
+const initials=n=>String(n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const locBadge=l=>l?'<span class="loc'+(l==="Airport"?' air':' cen')+'">'+(l==="Airport"?"AIR":"CEN")+'</span>':'';
+const chip=(time,type,loc,rm)=>'<span class="chip"><i class="dot" style="background:'+esc(tcol(type))+'"></i>'
+  +esc(tlabel(time,type))+locBadge(loc)+(rm||'')+'</span>';
+const typeChip=(t,rm)=>'<span class="chip"><i class="dot" style="background:'+esc(t.color)+'"></i>'
+  +esc(t.name+(t.dur?" "+t.dur+"'":""))+(rm||'')+'</span>';
+let ringAnim=true;
+
+// ---------- stats ----------
+function stats(){
+  const tk=toKey(new Date());
+  const up=st.holidays.filter(h=>h.to>=tk);
+  const off=st.holidays.filter(h=>h.from<=tk&&tk<=h.to).map(h=>(byId(h.coachId)||{}).name).filter(Boolean);
+  let tot=0,cov=0;
+  up.forEach(h=>(h.covers||[]).forEach(c=>{if(c.date>=tk){tot++;if(c.subId)cov++}}));
+  const next=up.filter(h=>h.from>tk).sort((a,b)=>a.from.localeCompare(b.from))[0];
+  return {tk,up,off,tot,cov,next};
+}
+function ring(pct){
+  const r=34,c=2*Math.PI*r,o=c*(1-Math.max(0,Math.min(1,pct)));
+  const svg='<svg class="ring'+(ringAnim?' anim':'')+'" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">'
+    +'<defs><linearGradient id="gLime" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A3E635"/><stop offset="1" stop-color="#65A30D"/></linearGradient></defs>'
+    +'<circle cx="42" cy="42" r="'+r+'" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8"/>'
+    +'<circle class="arc" cx="42" cy="42" r="'+r+'" fill="none" stroke="url(#gLime)" stroke-width="8" stroke-linecap="round" '
+    +'stroke-dasharray="'+c.toFixed(2)+'" stroke-dashoffset="'+o.toFixed(2)+'" style="--c:'+c.toFixed(2)+'" transform="rotate(-90 42 42)"/></svg>';
+  ringAnim=false;
+  return svg;
+}
+function vStats(){
+  const s=stats();
+  const pct=s.tot?s.cov/s.tot:1;
+  const open=s.tot-s.cov;
+  const nextTxt=s.next?'Next: '+esc((byId(s.next.coachId)||{}).name||"?")+', '+fmtShort(s.next.from):'Nothing else booked';
+  return '<section class="stats">'
+    +'<div class="card stat">'+ring(pct)+'<div class="body"><div class="lbl">Coverage</div>'
+      +'<div class="num g-lime">'+Math.round(pct*100)+'%</div>'
+      +'<div class="det">'+(s.tot?(s.cov+' of '+s.tot+' upcoming classes covered'+(open?', '+open+' open':'')):'No upcoming classes to cover')+'</div></div></div>'
+    +'<div class="card stat"><div class="body"><div class="lbl">Off today</div>'
+      +'<div class="num g-amb">'+s.off.length+'</div>'
+      +'<div class="det">'+(s.off.length?esc(s.off.join(", ")):'Whole team is in')+'</div></div></div>'
+    +'<div class="card stat"><div class="body"><div class="lbl">Booked holidays</div>'
+      +'<div class="num g-cyan">'+s.up.length+'</div>'
+      +'<div class="det">'+nextTxt+'</div></div></div>'
+    +'</section>';
+}
+
 // ---------- views ----------
-function vTeam(){
-  let h='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px">'
-    +'<input placeholder="Coach name" value="'+esc(st.addName)+'" style="width:220px" '
-    +'oninput="_cfh.addName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addCoach()">'
-    +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.addCoach()">ADD COACH</button>'
-    +'<span class="muted">Each coach fills their own slot with their weekly classes.</span></div>';
-  if(!st.coaches.length)h+='<p class="muted center">No coaches yet &mdash; add the team above to get started.</p>';
-  for(const c of st.coaches){
-    const tot=DAYS.reduce((n,d)=>n+c.schedule[d].length,0);
-    h+='<section class="card"><div class="card-h"><h3 class="disp">'+esc(c.name)+'</h3>'
-      +'<div style="display:flex;gap:12px;align-items:center"><span style="color:#9AA0A6;font-size:11px">'+tot+' classes / week</span>'
-      +'<button class="ghost" style="color:var(--hol)" onclick="_cfh.rmCoach(\''+c.id+'\')">remove</button></div></div><div class="week">';
-    for(const d of DAYS){
-      h+='<div><div class="dayname">'+d+'</div><div class="stack">';
-      c.schedule[d].forEach((cl,i)=>{
-        h+='<span class="chip" style="'+chipStyle(cl.type)+'">'+esc(tlabel(cl.time,cl.type))
-          +(cl.loc?'<span class="loc'+(cl.loc==="Airport"?' air':'')+'">'+(cl.loc==="Airport"?"AIR":"CEN")+'</span>':'')
-          +'<button onclick="_cfh.rmClass(\''+c.id+'\',\''+d+'\','+i+')" aria-label="Remove class">&times;</button></span>';
-      });
-      if(st.editingDay===c.id+"|"+d){
-        h+='<select onchange="_cfh.setTime(this.value)">'+TIMES.map(t=>'<option'+(t===st.editTime?' selected':'')+'>'+t+'</option>').join("")+'</select>'
-          +'<select onchange="_cfh.setType(this.value)">'+allTypes().map(t=>'<option'+(t.name===st.editType?' selected':'')+'>'+esc(t.name)+'</option>').join("")+'</select>'
-          +'<select onchange="_cfh.setLoc(this.value)">'+LOCS.map(t=>'<option'+(t===st.editLoc?' selected':'')+'>'+t+'</option>').join("")+'</select>'
-          +'<div style="display:flex;gap:6px"><button class="btn" style="background:var(--cov);color:#fff;font-size:11px;padding:3px 10px" onclick="_cfh.addClass(\''+c.id+'\',\''+d+'\')">Add</button>'
-          +'<button class="ghost" onclick="_cfh.closeAdd()">Cancel</button></div>';
-      }else{
-        h+='<button class="ghost" onclick="_cfh.openAdd(\''+c.id+'\',\''+d+'\')">+ class</button>';
-      }
-      h+='</div></div>';
-    }
-    h+='</div></section>';
-  }
-  return h;
+function emptyTeam(msg){
+  return '<div class="card empty"><h2 class="h2">No coaches yet</h2><p>'+msg+'</p>'
+    +'<button class="btn btn-primary" onclick="_cfh.tab(\'team\')">'+ic('plus')+'Add the team</button></div>';
 }
 
 function vPlan(){
-  if(!st.coaches.length)return '<p class="muted center">First set up the team: <a href="#" onclick="_cfh.tab(\'team\');return false"><b>add coaches and their weekly hours</b></a>.</p>';
+  if(!st.coaches.length)return emptyTeam('Add each coach and their weekly classes first. The board then works out which classes need cover.');
   const others=st.coaches.filter(c=>c.id!==st.planCoach);
-  let h='<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px">'
-    +'<label><span class="lb">Coach</span><select onchange="_cfh.planCoach(this.value)"><option value="">Select...</option>'
+  const tk=toKey(new Date());
+  let h=vStats();
+  h+='<section class="card pad">'
+    +'<div class="sec-h"><h2 class="h2">'+(st.editingId?'Edit holiday':'Plan a holiday')+'</h2></div>'
+    +'<div class="form">'
+    +'<label class="field"><span class="lbl">Coach</span><select class="select" onchange="_cfh.planCoach(this.value)"><option value="">Select coach</option>'
     +st.coaches.map(c=>'<option value="'+c.id+'"'+(c.id===st.planCoach?' selected':'')+'>'+esc(c.name)+'</option>').join("")+'</select></label>'
-    +'<label><span class="lb">From</span><input type="date" value="'+st.planFrom+'" onchange="_cfh.planFrom(this.value)"></label>'
-    +'<label><span class="lb">To</span><input type="date" value="'+st.planTo+'" onchange="_cfh.planTo(this.value)"></label>'
-    +'<button class="btn disp" style="background:var(--hol);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.compute()">SHOW MY CLASSES</button>'
-    +(st.saved?'<span style="color:var(--cov);font-weight:600;font-size:13px">Holiday saved &#10003;</span>':'')
-    +'</div>';
+    +'<label class="field"><span class="lbl">From</span><input class="input" type="date" value="'+st.planFrom+'" onchange="_cfh.planFrom(this.value)"></label>'
+    +'<label class="field"><span class="lbl">To</span><input class="input" type="date" value="'+st.planTo+'" onchange="_cfh.planTo(this.value)"></label>'
+    +'<button class="btn btn-primary" onclick="_cfh.compute()">Show classes to cover</button>'
+    +'</div>'
+    +(st.saved?'<div class="ok">'+ic('check')+'Holiday saved</div>':'');
   if(st.covers){
-    h+='<div class="panel">';
-    if(st.editingId)h+='<div style="font-size:12px;font-weight:700;color:var(--hol);margin-bottom:6px">EDITING BOOKED HOLIDAY &mdash; change the assignments below, then update.</div>';
-    const saveLbl=st.editingId?"UPDATE HOLIDAY":"SAVE HOLIDAY";
-    const cancelBtn=st.editingId?'<button class="ghost" style="margin-left:10px" onclick="_cfh.cancelEdit()">cancel</button>':'';
+    const saveLbl=st.editingId?'Update holiday':'Save holiday';
+    const cancel=st.editingId?'<button class="btn btn-ghost" onclick="_cfh.cancelEdit()">Cancel</button>':'';
+    h+='<div class="divider"></div>';
     if(!st.covers.length){
-      h+='<p style="font-size:13px;margin:0 0 8px">No scheduled classes in this period &mdash; nothing to cover.</p>'
-        +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 18px" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancelBtn;
+      h+='<p class="muted" style="margin:0">No classes in this period, so there is nothing to cover.</p>'
+        +'<div class="foot"><button class="btn btn-primary" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancel+'</div>';
     }else{
-      h+='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'
-        +'<b style="font-size:13px">'+st.covers.length+' classes need cover:</b>'
-        +'<label class="muted" style="display:flex;align-items:center;gap:6px">One click &mdash; assign all to: '
-        +'<select onchange="_cfh.assignAll(this.value)"><option value="">choose...</option>'
-        +others.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("")+'</select></label></div><div class="covers">';
+      h+='<div class="cov-head"><div><b>'+st.covers.length+' classes</b> <span class="muted">need cover</span></div>'
+        +'<label class="field" style="flex-direction:row;align-items:center;gap:10px"><span class="muted">Assign all to</span>'
+        +'<select class="select" onchange="_cfh.assignAll(this.value)"><option value="">Choose coach</option>'
+        +others.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("")+'</select></label></div>'
+        +'<div class="covers">';
       st.covers.forEach((cv,i)=>{
         const busy=cv.subId&&onHoliday(cv.subId,cv.date);
-        h+='<div class="cover'+(busy?' bad':'')+'"><div style="font-size:11px"><div><b>'+fmtShort(cv.date)+'</b></div>'
-          +'<span class="chip" style="'+chipStyle(cv.type)+'">'+esc(tlabel(cv.time,cv.type))
-          +(cv.loc?'<span class="loc'+(cv.loc==="Airport"?' air':'')+'">'+(cv.loc==="Airport"?"AIR":"CEN")+'</span>':'')+'</span></div>'
-          +'<div style="text-align:right"><select style="font-size:11px;padding:3px 4px" onchange="_cfh.assignOne('+i+',this.value)">'
-          +'<option value="">needs cover</option>'
+        h+='<div class="cover'+(busy?' bad':'')+'"><div style="min-width:0"><div class="when">'+fmtShort(cv.date)+'</div>'+chip(cv.time,cv.type,cv.loc)+'</div>'
+          +'<div><select class="select" aria-label="Cover for '+esc(fmtShort(cv.date)+' '+cv.time)+'" onchange="_cfh.assignOne('+i+',this.value)">'
+          +'<option value="">Needs cover</option>'
           +others.map(c=>'<option value="'+c.id+'"'+(c.id===cv.subId?' selected':'')+'>'+esc(c.name)+'</option>').join("")
-          +'</select>'+(busy?'<div style="color:var(--err);font-size:10px;font-weight:700;margin-top:2px">on holiday!</div>':'')+'</div></div>';
+          +'</select>'+(busy?'<div class="warn-note">'+ic('alert')+'On holiday that day</div>':'')+'</div></div>';
       });
-      h+='</div><div style="margin-top:12px"><button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 20px" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancelBtn
-        +'<span class="muted" style="margin-left:12px">You can save with some classes still marked "needs cover" and fix them later with the edit button.</span></div>';
+      h+='</div><div class="foot"><button class="btn btn-primary" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancel
+        +'<span class="muted" style="font-size:13px">Classes left on "Needs cover" can be assigned later with Edit.</span></div>';
+    }
+  }
+  h+='</section>';
+
+  const list=st.holidays.slice().sort((a,b)=>{const pa=a.to<tk,pb=b.to<tk;return pa!==pb?(pa?1:-1):a.from.localeCompare(b.from)});
+  h+='<section class="card pad" style="margin-top:16px"><div class="sec-h"><h2 class="h2">Booked holidays</h2><span class="muted">'+list.length+' total</span></div>';
+  if(!list.length)h+='<p class="muted" style="margin:0">Nothing booked yet. Pick a coach and dates above to plan the first one.</p>';
+  else{
+    h+='<div class="hlist">';
+    for(const hh of list){
+      const cs=hh.covers||[];
+      const open=cs.filter(c=>!c.subId).length;
+      const subs=[...new Set(cs.map(c=>c.subId).filter(Boolean))].map(id=>{const c=byId(id);return c?c.name:null}).filter(Boolean);
+      const nm=(byId(hh.coachId)||{}).name||"?";
+      const pill=open?'<span class="pill open">'+open+' still open</span>'
+        :cs.length?'<span class="pill good" title="Covered by '+esc(subs.join(", "))+'">Covered by '+esc(subs.join(", "))+'</span>'
+        :'<span class="pill none">No classes</span>';
+      h+='<div class="hrow'+(hh.to<tk?' past':'')+'">'
+        +'<div class="who"><span class="avatar">'+esc(initials(nm))+'</span><div style="min-width:0"><div class="nm">'+esc(nm)+'</div>'
+        +'<div class="rng">'+fmtShort(hh.from)+' &rarr; '+fmtShort(hh.to)+'</div></div></div>'
+        +'<div class="cnt"><b>'+cs.length+'</b> classes</div>'
+        +'<div class="pill-w" style="min-width:0">'+pill+'</div>'
+        +'<div class="acts"><button class="iconbtn" aria-label="Edit holiday" title="Edit" onclick="_cfh.editHoliday(\''+hh.id+'\')">'+ic('edit')+'</button>'
+        +'<button class="iconbtn danger" aria-label="Delete holiday" title="Delete" onclick="_cfh.deleteHoliday(\''+hh.id+'\')">'+ic('trash')+'</button></div>'
+        +'</div>';
     }
     h+='</div>';
   }
-  h+='<h3 class="disp" style="font-size:24px;margin:22px 0 8px">BOOKED HOLIDAYS</h3>';
-  const list=st.holidays.slice().sort((a,b)=>a.from.localeCompare(b.from));
-  if(!list.length)h+='<p class="muted">Nothing booked yet.</p>';
-  for(const hh of list){
-    const open=(hh.covers||[]).filter(c=>!c.subId).length;
-    const subs=[...new Set((hh.covers||[]).map(c=>c.subId).filter(Boolean))].map(id=>{const c=byId(id);return c?c.name:null}).filter(Boolean);
-    h+='<div class="row"><b style="width:110px">'+esc((byId(hh.coachId)||{}).name||"?")+'</b>'
-      +'<span>'+fmtShort(hh.from)+' &rarr; '+fmtShort(hh.to)+'</span>'
-      +'<span class="muted">'+(hh.covers||[]).length+' classes</span>'
-      +(subs.length?'<span style="color:var(--cov);font-size:11px">covered by '+esc(subs.join(", "))+'</span>':'')
-      +(open?'<span style="color:var(--hol);font-size:11px;font-weight:700">'+open+' still need cover</span>':'')
-      +'<button class="ghost" style="margin-left:auto;color:var(--ink);font-weight:600" onclick="_cfh.editHoliday(\''+hh.id+'\')">edit</button>'
-      +'<button class="ghost" onclick="_cfh.deleteHoliday(\''+hh.id+'\')">delete</button></div>';
-  }
-  return h;
+  return h+'</section>';
 }
 
 function vCal(){
-  if(!st.coaches.length)return '<p class="muted center">Add the team first &mdash; the calendar builds itself.</p>';
+  if(!st.coaches.length)return emptyTeam('The calendar fills itself in once the team is set up.');
+  const tk=toKey(new Date());
   const nd=new Date(st.calY,st.calM+1,0).getDate();
   const days=Array.from({length:nd},(_,i)=>new Date(st.calY,st.calM,i+1));
   const cell=(cid,dk)=>{
     for(const h of st.holidays)if(h.coachId===cid&&h.from<=dk&&dk<=h.to)return{m:"F",t:"On holiday"};
     for(const h of st.holidays){
       const mine=(h.covers||[]).filter(c=>c.subId===cid&&c.date===dk);
-      if(mine.length){const o=byId(h.coachId);return{m:"S",t:mine.map(c=>c.time+" "+c.type+(c.loc?" @ "+c.loc:"")+" for "+(o?o.name:"?")).join(" &middot; ")}}
+      if(mine.length){const o=byId(h.coachId);return{m:"S",t:mine.map(c=>c.time+" "+c.type+(c.loc?" at "+c.loc:"")+" for "+(o?o.name:"?")).join(" / ")}}
     }
     return null;
   };
-  let h='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">'
-    +'<button class="btn" style="border:1px solid #C8C8C0;background:#fff;padding:4px 10px" onclick="_cfh.calMove(-1)">&larr;</button>'
-    +'<h3 class="disp" style="font-size:24px;width:190px;text-align:center;margin:0">'+MONTHS[st.calM]+' '+st.calY+'</h3>'
-    +'<button class="btn" style="border:1px solid #C8C8C0;background:#fff;padding:4px 10px" onclick="_cfh.calMove(1)">&rarr;</button>'
-    +'<span style="font-size:11px;display:flex;gap:8px;align-items:center;margin-left:10px">'
-    +'<span class="chip" style="background:var(--hol)">F</span> on holiday '
-    +'<span class="chip" style="background:var(--cov)">S</span> covering (hover for details)</span></div>'
-    +'<div style="overflow-x:auto"><table class="cal"><thead><tr><th class="sticky">Coach</th>';
+  let h='<section class="card pad"><div class="cal-h"><div class="month">'
+    +'<button class="iconbtn" aria-label="Previous month" onclick="_cfh.calMove(-1)">'+ic('left')+'</button>'
+    +'<h2 class="h2">'+MONTHS[st.calM]+' '+st.calY+'</h2>'
+    +'<button class="iconbtn" aria-label="Next month" onclick="_cfh.calMove(1)">'+ic('right')+'</button></div>'
+    +'<div class="legend"><span><i class="sw" style="background:linear-gradient(135deg,var(--amb1),var(--amb2))"></i>On holiday</span>'
+    +'<span><i class="sw" style="background:linear-gradient(135deg,var(--lime1),var(--lime2))"></i>Covering</span></div></div>'
+    +'<div class="scroll"><table class="cal"><thead><tr><th class="who-c"></th>';
   for(const d of days){
-    const w=d.getDay()===0||d.getDay()===6;
-    h+='<th style="padding:2px'+(w?';background:#ECECE6':'')+'"><div style="color:#AAA">'+dayName(d)[0]+'</div><div><b>'+d.getDate()+'</b></div></th>';
+    const k=toKey(d);
+    h+='<th class="'+(k===tk?'today':'')+'">'+dayName(d)[0]+'<span class="d">'+d.getDate()+'</span></th>';
   }
   h+='</tr></thead><tbody>';
-  st.coaches.forEach((c,ci)=>{
-    const bg=ci%2?'#FAFAF6':'#fff';
-    h+='<tr style="background:'+bg+'"><td class="sticky" style="background:'+bg+'">'+esc(c.name)+'</td>';
+  for(const c of st.coaches){
+    h+='<tr><td class="who-c">'+esc(c.name)+'</td>';
     for(const d of days){
       const k=toKey(d),v=cell(c.id,k),w=d.getDay()===0||d.getDay()===6;
-      const b=v?(v.m==="F"?"var(--hol)":"var(--cov)"):(w?"#F1F1EB":"transparent");
-      h+='<td title="'+esc(v?v.t:"")+'" style="background:'+b+(v?';color:#fff;font-weight:700;cursor:help':'')+'">'+(v?v.m:"")+'</td>';
+      h+='<td class="'+(v?(v.m==="F"?'f':'s'):(w?'we':''))+'"'+(v?' title="'+esc(v.t)+'"':'')+'>'+(v?v.m:'')+'</td>';
     }
     h+='</tr>';
-  });
-  h+='</tbody></table></div>';
-  return h;
+  }
+  return h+'</tbody></table></div></section>';
+}
+
+function vTeam(){
+  let h='<section class="card pad" style="margin-bottom:16px"><div class="sec-h"><h2 class="h2">Team</h2><span class="muted">'+st.coaches.length+' coaches</span></div>'
+    +'<div class="form"><label class="field"><span class="lbl">Coach name</span>'
+    +'<input class="input" placeholder="e.g. Sam de Vries" value="'+esc(st.addName)+'" oninput="_cfh.addName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addCoach()"></label>'
+    +'<button class="btn btn-primary" onclick="_cfh.addCoach()">'+ic('plus')+'Add coach</button></div>'
+    +'<p class="muted" style="margin:12px 0 0">Each coach fills in their own weekly classes. Holidays use this schedule to work out what needs cover.</p></section>';
+  if(!st.coaches.length)return h;
+  h+='<div class="coaches">';
+  for(const c of st.coaches){
+    const tot=DAYS.reduce((n,d)=>n+c.schedule[d].length,0);
+    h+='<section class="card" style="overflow:hidden"><div class="coach-h"><div class="who"><span class="avatar">'+esc(initials(c.name))+'</span>'
+      +'<div style="min-width:0"><h3 class="h2 nm">'+esc(c.name)+'</h3><div class="sub">'+tot+' classes a week</div></div></div>'
+      +'<button class="iconbtn danger" aria-label="Remove '+esc(c.name)+'" title="Remove coach" onclick="_cfh.rmCoach(\''+c.id+'\')">'+ic('trash')+'</button></div>'
+      +'<div class="week">';
+    for(const d of DAYS){
+      h+='<div class="day"><span class="lbl">'+d+'</span>';
+      c.schedule[d].forEach((cl,i)=>{
+        h+=chip(cl.time,cl.type,cl.loc,'<button class="x" aria-label="Remove class" onclick="_cfh.rmClass(\''+c.id+'\',\''+d+'\','+i+')">'+ic('x')+'</button>');
+      });
+      if(st.editingDay===c.id+"|"+d){
+        h+='<div class="addform">'
+          +'<select class="select" aria-label="Time" onchange="_cfh.setTime(this.value)">'+TIMES.map(t=>'<option'+(t===st.editTime?' selected':'')+'>'+t+'</option>').join("")+'</select>'
+          +'<select class="select" aria-label="Class type" onchange="_cfh.setType(this.value)">'+allTypes().map(t=>'<option'+(t.name===st.editType?' selected':'')+'>'+esc(t.name)+'</option>').join("")+'</select>'
+          +'<select class="select" aria-label="Location" onchange="_cfh.setLoc(this.value)">'+LOCS.map(t=>'<option'+(t===st.editLoc?' selected':'')+'>'+t+'</option>').join("")+'</select>'
+          +'<div class="row"><button class="btn btn-primary btn-sm" onclick="_cfh.addClass(\''+c.id+'\',\''+d+'\')">Add</button>'
+          +'<button class="btn btn-ghost btn-sm" onclick="_cfh.closeAdd()">Cancel</button></div></div>';
+      }else{
+        h+='<button class="add-cls" onclick="_cfh.openAdd(\''+c.id+'\',\''+d+'\')">'+ic('plus')+'Class</button>';
+      }
+      h+='</div>';
+    }
+    h+='</div></section>';
+  }
+  return h+'</div>';
 }
 
 function vSettings(){
-  let h='<h3 class="disp" style="font-size:24px;margin:0 0 4px">CLASS TYPES</h3>'
-    +'<p class="muted" style="margin:0 0 12px">Add your own class types: they appear in every dropdown for the whole team. Optional duration shows on the chip (e.g. 30&#39;).</p>'
-    +'<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:16px">'
-    +'<label><span class="lb">Name</span><input placeholder="e.g. Mobility" value="'+esc(st.ntName)+'" style="width:160px" oninput="_cfh.ntName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addType()"></label>'
-    +'<label><span class="lb">Colour</span><input type="color" value="'+st.ntColor+'" style="width:52px;height:34px;padding:2px" onchange="_cfh.ntColor(this.value)"></label>'
-    +'<label><span class="lb">Duration (min, optional)</span><input type="number" min="5" step="5" value="'+esc(st.ntDur)+'" style="width:90px" oninput="_cfh.ntDur(this.value)"></label>'
-    +'<button class="btn disp" style="background:var(--ink);color:#fff;font-size:17px;padding:7px 16px" onclick="_cfh.addType()">ADD TYPE</button></div>';
-  h+='<div class="dayname">Built-in</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">'
-    +BUILTIN.map(t=>'<span class="chip" style="'+chipStyle(t.name)+'">'+esc(t.name+(t.dur?" "+t.dur+"\u0027":""))+'</span>').join("")+'</div>';
-  h+='<div class="dayname">Custom (editable)</div>';
-  if(!(st.customTypes||[]).length)h+='<p class="muted">No custom types yet.</p>';
-  else h+='<div style="display:flex;flex-wrap:wrap;gap:6px">'
-    +st.customTypes.map(t=>'<span class="chip" style="'+chipStyle(t.name)+'">'+esc(t.name+(t.dur?" "+t.dur+"\u0027":""))
-    +'<button onclick="_cfh.rmType(\''+esc(t.name)+'\')" aria-label="Remove type">&times;</button></span>').join("")+'</div>';
-  return h;
+  let h='<section class="card pad"><div class="sec-h"><h2 class="h2">Class types</h2></div>'
+    +'<p class="muted" style="margin:-8px 0 20px">New types show up straight away in every coach\'s class picker. Add a duration if the class is not the usual length; it appears on the chip.</p>'
+    +'<div class="form">'
+    +'<label class="field"><span class="lbl">Name</span><input class="input" placeholder="e.g. Mobility" value="'+esc(st.ntName)+'" oninput="_cfh.ntName(this.value)" onkeydown="if(event.key===\'Enter\')_cfh.addType()"></label>'
+    +'<label class="field" style="flex:0 0 auto"><span class="lbl">Colour</span><input class="input" type="color" value="'+esc(st.ntColor)+'" onchange="_cfh.ntColor(this.value)"></label>'
+    +'<label class="field" style="flex:0 1 140px"><span class="lbl">Minutes</span><input class="input" type="number" min="5" step="5" placeholder="Optional" value="'+esc(st.ntDur)+'" oninput="_cfh.ntDur(this.value)"></label>'
+    +'<button class="btn btn-primary" onclick="_cfh.addType()">'+ic('plus')+'Add type</button></div>'
+    +'<div class="divider"></div>'
+    +'<div class="lbl" style="margin-bottom:12px">Built-in</div><div class="chips">'+BUILTIN.map(t=>typeChip(t)).join("")+'</div>'
+    +'<div class="lbl" style="margin:24px 0 12px">Added by you</div>';
+  const cts=st.customTypes||[];
+  if(!cts.length)h+='<p class="muted" style="margin:0">None yet.</p>';
+  else h+='<div class="chips">'+cts.map(t=>typeChip(t,'<button class="x" aria-label="Remove '+esc(t.name)+'" data-n="'+esc(t.name)+'" onclick="_cfh.rmType(this.dataset.n)">'+ic('x')+'</button>')).join("")+'</div>';
+  return h+'</section>';
 }
 
 function render(){
-  const tabs=[["plan","PLAN HOLIDAY"],["calendar","CALENDAR"],["team","TEAM & HOURS"],["settings","SETTINGS"]];
-  const note=store.mode==="cloud"
-    ?'<p style="color:#7BD88F">LIVE shared board &mdash; anyone with the link can view and edit. Hit Refresh to load changes from others.</p>'
-    :store.mode==="shared"
-    ?'<p>Shared with the whole team &mdash; everyone sees the same board.</p>'
-    :store.mode==="local"
-    ?'<p style="color:#F5C542">Saved on THIS device only (browser storage). Open the board inside Claude to share it with the team.</p>'
-    :'<p style="color:#FF7B6B">WARNING: no storage available &mdash; data will be lost when you close or refresh.</p>';
-  let h='<header><div><h1 class="disp">CFH HOLIDAY BOARD</h1>'+note+'</div>'
-    +'<button class="btn btn-dark" onclick="_cfh.refresh()">'+(st.loading?"Loading...":"Refresh")+'</button></header>'
-    +'<nav class="tabs">'+tabs.map(([k,l])=>'<button class="tab disp'+(st.tab===k?' on':'')+'" onclick="_cfh.tab(\''+k+'\')">'+l+'</button>').join("")+'</nav>'
-    +'<main>'+(st.loading?'<p class="muted center">Loading the board...</p>':(st.tab==="team"?vTeam():st.tab==="plan"?vPlan():st.tab==="settings"?vSettings():vCal()))+'</main>';
-  document.getElementById("app").innerHTML=h;
+  const tabs=[["plan","Plan"],["calendar","Calendar"],["team","Team &amp; hours"],["settings","Settings"]];
+  const stat=store.mode==="cloud"?['','Live','Shared board: everyone with the link sees the same data. Press Refresh to load changes from others.']
+    :store.mode==="shared"?['shared','Shared','Shared with the whole team.']
+    :store.mode==="local"?['warn','This device only','Saved in this browser only. Other coaches will not see it.']
+    :['bad','Not saved','No storage available: data is lost when you close or refresh.'];
+  let h='<header class="top"><div class="brand">'+LOGO+'<div><h1>Holiday Board</h1><p>CrossFit Hofplein coaching team</p></div></div>'
+    +'<div class="top-r"><span class="status '+stat[0]+'" title="'+esc(stat[2])+'"><i></i><span>'+stat[1]+'</span></span>'
+    +'<button class="btn btn-ghost btn-sm" onclick="_cfh.refresh()" aria-label="Refresh">'+ic('refresh')+'<span>'+(st.loading?'Loading':'Refresh')+'</span></button></div></header>'
+    +'<nav class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button class="tab'+(st.tab===k?' on':'')+'" role="tab" aria-selected="'+(st.tab===k)+'" onclick="_cfh.tab(\''+k+'\')">'+l+'</button>').join("")+'</nav>'
+    +'<main>';
+  if(st.loading)h+='<div class="stats"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div><div class="sk" style="height:260px"></div>';
+  else h+=st.tab==="team"?vTeam():st.tab==="plan"?vPlan():st.tab==="settings"?vSettings():vCal();
+  document.getElementById("app").innerHTML=h+'</main>';
 }
 
 render();
@@ -364,3 +591,5 @@ loadAll();
 
 })();
 </script>
+</body>
+</html>
