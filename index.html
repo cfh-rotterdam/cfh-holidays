@@ -102,6 +102,9 @@ input[type=color].input{width:52px;padding:4px;cursor:pointer}
 .cov-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
 .covers{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 .cover{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 12px 12px 16px;border-radius:16px;background:var(--s2);border:1px solid var(--line)}
+.cover.cxl{background:transparent;border-style:dashed}
+.cover.cxl .chip{opacity:.55;text-decoration:line-through}
+.pill-w{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
 .cover.bad{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.06)}
 .cover .when{font-size:13px;font-weight:600;margin-bottom:6px}
 .cover .select{height:34px;font-size:13px;border-radius:10px;max-width:150px}
@@ -282,6 +285,8 @@ async function loadAll(){
     const rs=await Promise.all(keys.map(async k=>{try{const r=await store.get(k.key||k);return r?JSON.parse(r.value):null}catch(e){return null}}));
     holidays=rs.filter(Boolean);
   }catch(e){}
+  const cx=coaches.filter(c=>String(c.name||"").trim().toUpperCase()==="CANCELLED").map(c=>c.id);
+  if(cx.length)for(const h of holidays){let ch=false;(h.covers||[]).forEach(c=>{if(cx.includes(c.subId)){c.subId=CANCEL;ch=true}});if(ch)saveHol(h)}
   st.coaches=coaches;st.holidays=holidays;st.customTypes=ctypes;st.loading=false;render();
 }
 async function saveCoaches(){try{await store.set("cfh-coaches",JSON.stringify(st.coaches))}catch(e){console.error(e)}}
@@ -346,6 +351,7 @@ A.rmType=async n=>{if(!confirm("Remove class type "+n+"? Classes already schedul
   render()};
 A.calMove=d=>{let m=st.calM+d,y=st.calY;if(m<0){m=11;y--}if(m>11){m=0;y++}st.calM=m;st.calY=y;render()};
 
+const CANCEL="__cancelled";
 const LOGO='<svg class="logo" viewBox="0 66 500 368" role="img" aria-label="CrossFit Hofplein"><path fill="currentColor" d="M 461.62 357.37 C 453.14 363.06 405.37 411.57 415.72 342.15 C 418.76 321.75 419.45 305.62 417.84 292.87 C 415.62 275.39 408.79 262.49 397.51 254.51 C 385.93 246.32 371.02 244.29 353.18 248.47 C 345.98 250.16 338.14 252.84 329.25 256.68 L 339.39 192.34 C 344.79 157.87 294.46 152.47 289.14 186.33 L 273.32 286.69 C 263.95 292.27 254.23 298.18 244.27 304.25 C 234.66 310.1 224.73 316.14 214.61 322.2 C 206.61 326.98 198.87 331.71 191.38 336.3 L 204.69 253.67 L 243.3 253.67 C 256.67 253.67 267.5 242.83 267.5 229.46 C 267.5 216.09 256.67 205.26 243.3 205.26 L 212.5 205.26 L 220.94 152.83 C 223.73 136.27 240.54 120.89 256.86 121.75 C 278.83 122.91 274.94 141.49 296.48 145.04 C 313.12 147.78 337.46 127.43 310.18 95.05 C 303.75 87.43 295.84 81.45 286.65 77.3 C 277.45 73.14 267.43 71.04 256.86 71.04 C 215.68 71.04 178.01 103.25 171.09 144.39 L 134.96 368.59 C 134.96 368.6 134.96 368.61 134.95 368.62 C 116.29 377.61 99.96 382.45 86.84 379.65 C 72.29 376.55 62.13 368.72 55.79 355.73 C 49.2 342.2 46.95 323.79 49.3 302.51 C 51.55 282.07 56.69 265.75 62.8 253.67 C 70.97 237.52 93.61 214.12 102.14 249.59 C 109.62 280.72 145.22 269.28 145.55 242.29 C 145.58 240.05 145.49 228.25 141.11 215.43 C 126.04 171.36 69.53 165.71 33.3 212.1 C 16.23 233.94 4.83 264.16 1.18 297.19 C -2.18 327.59 1.66 355.17 12.28 376.95 C 25.2 403.45 47.5 420.76 76.75 427 C 82.75 428.28 88.75 428.88 94.79 428.88 C 132.87 428.88 171.89 404.99 216.12 377.91 C 223.68 373.29 231.48 368.51 239.45 363.75 C 247.64 358.86 255.64 354 263.45 349.25 L 255.49 399.74 C 253.08 415.09 264.95 428.96 280.48 428.96 C 292.95 428.96 303.55 419.89 305.48 407.58 L 319.97 315.59 C 323.5 313.61 326.92 311.74 330.22 309.99 C 359.57 294.44 373.21 298.98 367.84 335.01 C 363.99 360.84 360.01 387.55 375.13 407.77 C 383.59 419.07 396.45 425.98 413.34 428.33 C 416.2 428.73 419.07 428.93 421.97 428.93 C 434.22 428.93 446.88 425.4 459.71 418.39 C 469.61 412.99 484.01 403 493.32 391.66 C 512.21 368.66 487.68 339.9 461.62 357.37"/></svg>';
 // ---------- icons (lucide paths) ----------
 const IC={
@@ -373,10 +379,10 @@ function stats(){
   const tk=toKey(new Date());
   const up=st.holidays.filter(h=>h.to>=tk);
   const off=st.holidays.filter(h=>h.from<=tk&&tk<=h.to).map(h=>(byId(h.coachId)||{}).name).filter(Boolean);
-  let tot=0,cov=0;
-  up.forEach(h=>(h.covers||[]).forEach(c=>{if(c.date>=tk){tot++;if(c.subId)cov++}}));
+  let tot=0,cov=0,cxl=0;
+  up.forEach(h=>(h.covers||[]).forEach(c=>{if(c.date>=tk){tot++;if(c.subId===CANCEL)cxl++;else if(c.subId)cov++}}));
   const next=up.filter(h=>h.from>tk).sort((a,b)=>a.from.localeCompare(b.from))[0];
-  return {tk,up,off,tot,cov,next};
+  return {tk,up,off,tot,cov,cxl,next};
 }
 function ring(pct){
   const r=34,c=2*Math.PI*r,o=c*(1-Math.max(0,Math.min(1,pct)));
@@ -390,13 +396,13 @@ function ring(pct){
 }
 function vStats(){
   const s=stats();
-  const pct=s.tot?s.cov/s.tot:1;
-  const open=s.tot-s.cov;
+  const pct=s.tot?(s.cov+s.cxl)/s.tot:1;
+  const open=s.tot-s.cov-s.cxl;
   const nextTxt=s.next?'Next: '+esc((byId(s.next.coachId)||{}).name||"?")+', '+fmtShort(s.next.from):'Nothing else booked';
   return '<section class="stats">'
     +'<div class="card stat">'+ring(pct)+'<div class="body"><div class="lbl">Coverage</div>'
       +'<div class="num g-lime">'+Math.round(pct*100)+'%</div>'
-      +'<div class="det">'+(s.tot?(s.cov+' of '+s.tot+' upcoming classes covered'+(open?', '+open+' open':'')):'No upcoming classes to cover')+'</div></div></div>'
+      +'<div class="det">'+(s.tot?(s.cov+' of '+s.tot+' upcoming classes covered'+(s.cxl?', '+s.cxl+' cancelled':'')+(open?', '+open+' open':'')):'No upcoming classes to cover')+'</div></div></div>'
     +'<div class="card stat"><div class="body"><div class="lbl">Off today</div>'
       +'<div class="num g-amb">'+s.off.length+'</div>'
       +'<div class="det">'+(s.off.length?esc(s.off.join(", ")):'Whole team is in')+'</div></div></div>'
@@ -438,14 +444,15 @@ function vPlan(){
       h+='<div class="cov-head"><div><b>'+st.covers.length+' classes</b> <span class="muted">need cover</span></div>'
         +'<label class="field" style="flex-direction:row;align-items:center;gap:10px"><span class="muted">Assign all to</span>'
         +'<select class="select" onchange="_cfh.assignAll(this.value)"><option value="">Choose coach</option>'
-        +others.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("")+'</select></label></div>'
+        +others.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join("")+'<option value="'+CANCEL+'">All cancelled</option></select></label></div>'
         +'<div class="covers">';
       st.covers.forEach((cv,i)=>{
         const busy=cv.subId&&onHoliday(cv.subId,cv.date);
-        h+='<div class="cover'+(busy?' bad':'')+'"><div style="min-width:0"><div class="when">'+fmtShort(cv.date)+'</div>'+chip(cv.time,cv.type,cv.loc)+'</div>'
+        h+='<div class="cover'+(busy?' bad':'')+(cv.subId===CANCEL?' cxl':'')+'"><div style="min-width:0"><div class="when">'+fmtShort(cv.date)+'</div>'+chip(cv.time,cv.type,cv.loc)+'</div>'
           +'<div><select class="select" aria-label="Cover for '+esc(fmtShort(cv.date)+' '+cv.time)+'" onchange="_cfh.assignOne('+i+',this.value)">'
           +'<option value="">Needs cover</option>'
           +others.map(c=>'<option value="'+c.id+'"'+(c.id===cv.subId?' selected':'')+'>'+esc(c.name)+'</option>').join("")
+          +'<option value="'+CANCEL+'"'+(cv.subId===CANCEL?' selected':'')+'>Class cancelled</option>'
           +'</select>'+(busy?'<div class="warn-note">'+ic('alert')+'On holiday that day</div>':'')+'</div></div>';
       });
       h+='</div><div class="foot"><button class="btn btn-primary" onclick="_cfh.saveHoliday()">'+saveLbl+'</button>'+cancel
@@ -464,14 +471,17 @@ function vPlan(){
       const open=cs.filter(c=>!c.subId).length;
       const subs=[...new Set(cs.map(c=>c.subId).filter(Boolean))].map(id=>{const c=byId(id);return c?c.name:null}).filter(Boolean);
       const nm=(byId(hh.coachId)||{}).name||"?";
-      const pill=open?'<span class="pill open">'+open+' still open</span>'
-        :cs.length?'<span class="pill good" title="Covered by '+esc(subs.join(", "))+'">Covered by '+esc(subs.join(", "))+'</span>'
-        :'<span class="pill none">No classes</span>';
+      const nc=cs.filter(c=>c.subId===CANCEL).length;
+      let pill='';
+      if(open)pill+='<span class="pill open">'+open+' still open</span>';
+      else if(subs.length)pill+='<span class="pill good" title="Covered by '+esc(subs.join(", "))+'">Covered by '+esc(subs.join(", "))+'</span>';
+      if(nc)pill+='<span class="pill none">'+nc+' cancelled</span>';
+      if(!pill)pill='<span class="pill none">No classes</span>';
       h+='<div class="hrow'+(hh.to<tk?' past':'')+'">'
         +'<div class="who"><span class="avatar">'+esc(initials(nm))+'</span><div style="min-width:0"><div class="nm">'+esc(nm)+'</div>'
         +'<div class="rng">'+fmtShort(hh.from)+' &rarr; '+fmtShort(hh.to)+'</div></div></div>'
         +'<div class="cnt"><b>'+cs.length+'</b> classes</div>'
-        +'<div class="pill-w" style="min-width:0">'+pill+'</div>'
+        +'<div class="pill-w">'+pill+'</div>'
         +'<div class="acts"><button class="iconbtn" aria-label="Edit holiday" title="Edit" onclick="_cfh.editHoliday(\''+hh.id+'\')">'+ic('edit')+'</button>'
         +'<button class="iconbtn danger" aria-label="Delete holiday" title="Delete" onclick="_cfh.deleteHoliday(\''+hh.id+'\')">'+ic('trash')+'</button></div>'
         +'</div>';
