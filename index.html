@@ -10,7 +10,7 @@
 :root{
   --bg:#0A0A0C;--s1:#141417;--s2:#1B1B1F;--s3:#232328;
   --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
-  --t1:#FAFAFA;--t2:#A1A1AA;--t3:#52525B;
+  --t1:#FAFAFA;--t2:#A1A1AA;--t3:#8A8A94;
   --lime1:#A3E635;--lime2:#65A30D;--cyan1:#22D3EE;--cyan2:#0891B2;--amb1:#FBBF24;--amb2:#D97706;
   --err:#F87171;
   --ease:cubic-bezier(.4,0,.2,1);
@@ -197,6 +197,37 @@ table.cal .who-c{position:sticky;left:0;z-index:1;background:var(--s1);text-alig
   .form .field{flex-basis:100%}
   .form .btn{width:100%}
 }
+/* error banner */
+.alert{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;margin-bottom:16px;border-radius:16px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.45);color:var(--t1)}
+.alert>.ic{color:var(--err);width:20px;height:20px;margin-top:1px}
+.alert .msg{flex:1;min-width:0;font-size:14px}
+.alert .msg b{display:block;margin-bottom:2px}
+.alert .msg span{color:var(--t2)}
+.alert .row{display:flex;gap:8px;flex:none;flex-wrap:wrap}
+/* calendar detail */
+table.cal td.f,table.cal td.s{cursor:pointer}
+table.cal td.sel{outline:2px solid var(--t1);outline-offset:1px}
+.cal-detail{margin-top:16px;padding:16px 20px;border-radius:16px;background:var(--s2);border:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.cal-detail .ttl{font-weight:600;margin-bottom:6px}
+.cal-detail ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.cal-hint{margin:12px 0 0;color:var(--t2);font-size:13px}
+/* past holidays toggle */
+.past-tg{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:40px;margin-top:8px;border-radius:12px;border:1px dashed var(--line2);background:none;color:var(--t2);cursor:pointer;font-size:13px}
+.past-tg:hover{color:var(--t1);border-color:var(--t3)}
+/* touch devices: 44px targets */
+@media (pointer:coarse){
+  .iconbtn{width:44px;height:44px}
+  .acts{gap:4px}
+  .chip{height:32px}
+  .chip .x{width:28px;height:28px;margin:-2px -8px -2px -2px;justify-content:center;align-items:center}
+  .chip .x .ic{width:16px;height:16px}
+  .add-cls{height:36px;padding:0 14px}
+  .tab{padding:12px 18px}
+  .cover .select,.addform .select{height:44px}
+  .btn-sm{height:40px}
+  .link{padding:10px 0}
+  table.cal td{height:36px;min-width:34px}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -227,7 +258,7 @@ const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 const now=new Date();
-const st={tab:"plan",coaches:[],holidays:[],loading:true,
+const st={err:null,online:null,showPast:false,calSel:null,tab:"plan",coaches:[],holidays:[],loading:true,
   addName:"",editingDay:null,editTime:"18:30",editType:"WOD",editLoc:"Central",
   planCoach:"",planFrom:"",planTo:"",covers:null,saved:false,editingId:null,
   calY:now.getFullYear(),calM:now.getMonth(),customTypes:[],ntName:"",ntColor:"#217A54",ntDur:""};
@@ -279,19 +310,26 @@ async function loadAll(){
   let coaches=[],holidays=[],ctypes=[];
   try{const c=await store.get("cfh-coaches");if(c&&c.value)coaches=JSON.parse(c.value)}catch(e){}
   try{const t=await store.get("cfh-types");if(t&&t.value)ctypes=JSON.parse(t.value)}catch(e){}
+  let ok=true;
   try{
     const l=await store.list("cfh-hol:");
     const keys=(l&&l.keys)||[];
     const rs=await Promise.all(keys.map(async k=>{try{const r=await store.get(k.key||k);return r?JSON.parse(r.value):null}catch(e){return null}}));
     holidays=rs.filter(Boolean);
-  }catch(e){}
+  }catch(e){ok=false;console.error(e)}
+  st.online=ok;
+  if(!ok){st.err={load:1,t:"Can't reach the board's database",d:"Nothing is loaded and nothing you change will be saved. Check your connection, then press Retry. If it keeps happening, the database rules may have expired."};st.loading=false;render();return}
+  if(st.err&&st.err.load)st.err=null;
   const cx=coaches.filter(c=>String(c.name||"").trim().toUpperCase()==="CANCELLED").map(c=>c.id);
   if(cx.length)for(const h of holidays){let ch=false;(h.covers||[]).forEach(c=>{if(cx.includes(c.subId)){c.subId=CANCEL;ch=true}});if(ch)saveHol(h)}
   st.coaches=coaches;st.holidays=holidays;st.customTypes=ctypes;st.loading=false;render();
 }
-async function saveCoaches(){try{await store.set("cfh-coaches",JSON.stringify(st.coaches))}catch(e){console.error(e)}}
-async function saveHol(h){try{await store.set("cfh-hol:"+h.id,JSON.stringify(h))}catch(e){console.error(e)}}
-async function delHol(id){try{await store.del("cfh-hol:"+id)}catch(e){console.error(e)}}
+function failSave(e,what){console.error(e);st.online=false;
+  st.err={t:"Not saved: "+what,d:"The board couldn't reach the database, so this change only exists on your screen. Press Retry to reload, then make the change again."};render();return false}
+async function saveCoaches(){try{await store.set("cfh-coaches",JSON.stringify(st.coaches));return true}catch(e){return failSave(e,"team & hours")}}
+async function saveHol(h){try{await store.set("cfh-hol:"+h.id,JSON.stringify(h));return true}catch(e){return failSave(e,"holiday")}}
+async function delHol(id){try{await store.del("cfh-hol:"+id);return true}catch(e){return failSave(e,"holiday delete")}}
+async function saveTypes(){try{await store.set("cfh-types",JSON.stringify(st.customTypes));return true}catch(e){return failSave(e,"class types")}}
 
 const byId=id=>st.coaches.find(c=>c.id===id);
 const onHoliday=(cid,dk)=>st.holidays.some(h=>h.coachId===cid&&h.from<=dk&&dk<=h.to);
@@ -299,7 +337,7 @@ const onHoliday=(cid,dk)=>st.holidays.some(h=>h.coachId===cid&&h.from<=dk&&dk<=h
 // ---------- actions (exposed) ----------
 const A=window._cfh={};
 A.tab=t=>{st.tab=t;render()};
-A.refresh=()=>loadAll();
+A.refresh=()=>{st.err=null;loadAll()};
 A.addName=v=>{st.addName=v};
 A.addCoach=()=>{const n=st.addName.trim();if(!n)return;
   st.coaches.push({id:uid(),name:n,schedule:Object.fromEntries(DAYS.map(d=>[d,[]]))});
@@ -328,14 +366,19 @@ A.compute=()=>{const c=byId(st.planCoach);
 A.assignAll=v=>{if(!v||!st.covers)return;st.covers=st.covers.map(c=>({...c,subId:v}));render()};
 A.assignOne=(i,v)=>{st.covers[i].subId=v;render()};
 A.saveHoliday=async()=>{const h={id:st.editingId||uid(),coachId:st.planCoach,from:st.planFrom,to:st.planTo,covers:st.covers||[]};
-  await saveHol(h);st.holidays=st.holidays.filter(x=>x.id!==h.id).concat([h]);
+  if(!(await saveHol(h)))return;
+  st.holidays=st.holidays.filter(x=>x.id!==h.id).concat([h]);
   st.covers=null;st.planFrom="";st.planTo="";st.editingId=null;st.saved=true;render()};
 A.editHoliday=id=>{const h=st.holidays.find(x=>x.id===id);if(!h)return;
   st.editingId=h.id;st.planCoach=h.coachId;st.planFrom=h.from;st.planTo=h.to;
   st.covers=(h.covers||[]).map(c=>({...c}));st.saved=false;st.tab="plan";render()};
 A.cancelEdit=()=>{st.editingId=null;st.covers=null;st.planFrom="";st.planTo="";render()};
 A.deleteHoliday=async id=>{if(!confirm("Delete this holiday?"))return;
-  await delHol(id);st.holidays=st.holidays.filter(h=>h.id!==id);render()};
+  if(!(await delHol(id)))return;
+  st.holidays=st.holidays.filter(h=>h.id!==id);render()};
+A.dismissErr=()=>{st.err=null;render()};
+A.togglePast=()=>{st.showPast=!st.showPast;render()};
+A.calPick=(cid,dk)=>{st.calSel=(st.calSel&&st.calSel.cid===cid&&st.calSel.dk===dk)?null:{cid,dk};render()};
 A.ntName=v=>{st.ntName=v};
 A.ntColor=v=>{st.ntColor=v};
 A.ntDur=v=>{st.ntDur=v};
@@ -343,13 +386,13 @@ A.addType=async()=>{const n=st.ntName.trim();if(!n)return;
   if(allTypes().some(t=>t.name.toLowerCase()===n.toLowerCase())){alert("A class type with this name already exists.");return}
   const t={name:n,color:st.ntColor};const d=parseInt(st.ntDur,10);if(d>0)t.dur=d;
   st.customTypes=(st.customTypes||[]).concat([t]);st.ntName="";st.ntDur="";
-  try{await store.set("cfh-types",JSON.stringify(st.customTypes))}catch(e){console.error(e)}
+  await saveTypes();
   render()};
 A.rmType=async n=>{if(!confirm("Remove class type "+n+"? Classes already scheduled keep the name but lose the custom colour."))return;
   st.customTypes=(st.customTypes||[]).filter(t=>t.name!==n);
-  try{await store.set("cfh-types",JSON.stringify(st.customTypes))}catch(e){console.error(e)}
+  await saveTypes();
   render()};
-A.calMove=d=>{let m=st.calM+d,y=st.calY;if(m<0){m=11;y--}if(m>11){m=0;y++}st.calM=m;st.calY=y;render()};
+A.calMove=d=>{st.calSel=null;let m=st.calM+d,y=st.calY;if(m<0){m=11;y--}if(m>11){m=0;y++}st.calM=m;st.calY=y;render()};
 
 const CANCEL="__cancelled";
 const LOGO='<svg class="logo" viewBox="0 66 500 368" role="img" aria-label="CrossFit Hofplein"><path fill="currentColor" d="M 461.62 357.37 C 453.14 363.06 405.37 411.57 415.72 342.15 C 418.76 321.75 419.45 305.62 417.84 292.87 C 415.62 275.39 408.79 262.49 397.51 254.51 C 385.93 246.32 371.02 244.29 353.18 248.47 C 345.98 250.16 338.14 252.84 329.25 256.68 L 339.39 192.34 C 344.79 157.87 294.46 152.47 289.14 186.33 L 273.32 286.69 C 263.95 292.27 254.23 298.18 244.27 304.25 C 234.66 310.1 224.73 316.14 214.61 322.2 C 206.61 326.98 198.87 331.71 191.38 336.3 L 204.69 253.67 L 243.3 253.67 C 256.67 253.67 267.5 242.83 267.5 229.46 C 267.5 216.09 256.67 205.26 243.3 205.26 L 212.5 205.26 L 220.94 152.83 C 223.73 136.27 240.54 120.89 256.86 121.75 C 278.83 122.91 274.94 141.49 296.48 145.04 C 313.12 147.78 337.46 127.43 310.18 95.05 C 303.75 87.43 295.84 81.45 286.65 77.3 C 277.45 73.14 267.43 71.04 256.86 71.04 C 215.68 71.04 178.01 103.25 171.09 144.39 L 134.96 368.59 C 134.96 368.6 134.96 368.61 134.95 368.62 C 116.29 377.61 99.96 382.45 86.84 379.65 C 72.29 376.55 62.13 368.72 55.79 355.73 C 49.2 342.2 46.95 323.79 49.3 302.51 C 51.55 282.07 56.69 265.75 62.8 253.67 C 70.97 237.52 93.61 214.12 102.14 249.59 C 109.62 280.72 145.22 269.28 145.55 242.29 C 145.58 240.05 145.49 228.25 141.11 215.43 C 126.04 171.36 69.53 165.71 33.3 212.1 C 16.23 233.94 4.83 264.16 1.18 297.19 C -2.18 327.59 1.66 355.17 12.28 376.95 C 25.2 403.45 47.5 420.76 76.75 427 C 82.75 428.28 88.75 428.88 94.79 428.88 C 132.87 428.88 171.89 404.99 216.12 377.91 C 223.68 373.29 231.48 368.51 239.45 363.75 C 247.64 358.86 255.64 354 263.45 349.25 L 255.49 399.74 C 253.08 415.09 264.95 428.96 280.48 428.96 C 292.95 428.96 303.55 419.89 305.48 407.58 L 319.97 315.59 C 323.5 313.61 326.92 311.74 330.22 309.99 C 359.57 294.44 373.21 298.98 367.84 335.01 C 363.99 360.84 360.01 387.55 375.13 407.77 C 383.59 419.07 396.45 425.98 413.34 428.33 C 416.2 428.73 419.07 428.93 421.97 428.93 C 434.22 428.93 446.88 425.4 459.71 418.39 C 469.61 412.99 484.01 403 493.32 391.66 C 512.21 368.66 487.68 339.9 461.62 357.37"/></svg>';
@@ -461,10 +504,13 @@ function vPlan(){
   }
   h+='</section>';
 
-  const list=st.holidays.slice().sort((a,b)=>{const pa=a.to<tk,pb=b.to<tk;return pa!==pb?(pa?1:-1):a.from.localeCompare(b.from)});
-  h+='<section class="card pad" style="margin-top:16px"><div class="sec-h"><h2 class="h2">Booked holidays</h2><span class="muted">'+list.length+' total</span></div>';
-  if(!list.length)h+='<p class="muted" style="margin:0">Nothing booked yet. Pick a coach and dates above to plan the first one.</p>';
+  const upcoming=st.holidays.filter(x=>x.to>=tk).sort((a,b)=>a.from.localeCompare(b.from));
+  const past=st.holidays.filter(x=>x.to<tk).sort((a,b)=>b.from.localeCompare(a.from));
+  const list=st.showPast?upcoming.concat(past):upcoming;
+  h+='<section class="card pad" style="margin-top:16px"><div class="sec-h"><h2 class="h2">Booked holidays</h2><span class="muted">'+upcoming.length+' upcoming</span></div>';
+  if(!st.holidays.length)h+='<p class="muted" style="margin:0">Nothing booked yet. Pick a coach and dates above to plan the first one.</p>';
   else{
+    if(!upcoming.length)h+='<p class="muted" style="margin:0 0 8px">No upcoming holidays.</p>';
     h+='<div class="hlist">';
     for(const hh of list){
       const cs=hh.covers||[];
@@ -487,6 +533,8 @@ function vPlan(){
         +'</div>';
     }
     h+='</div>';
+    if(past.length)h+='<button class="past-tg" aria-expanded="'+st.showPast+'" onclick="_cfh.togglePast()">'
+      +(st.showPast?'Hide past holidays':'Show '+past.length+' past '+(past.length===1?'holiday':'holidays'))+'</button>';
   }
   return h+'</section>';
 }
@@ -520,11 +568,34 @@ function vCal(){
     h+='<tr><td class="who-c">'+esc(c.name)+'</td>';
     for(const d of days){
       const k=toKey(d),v=cell(c.id,k),w=d.getDay()===0||d.getDay()===6;
-      h+='<td class="'+(v?(v.m==="F"?'f':'s'):(w?'we':''))+'"'+(v?' title="'+esc(v.t)+'"':'')+'>'+(v?v.m:'')+'</td>';
+      const sel=v&&st.calSel&&st.calSel.cid===c.id&&st.calSel.dk===k;
+      h+='<td class="'+(v?(v.m==="F"?'f':'s'):(w?'we':''))+(sel?' sel':'')+'"'
+        +(v?' title="'+esc(v.t)+'" tabindex="0" role="button" aria-label="'+esc(c.name+', '+fmtShort(k)+': '+v.t)+'"'
+          +' onclick="_cfh.calPick(\''+c.id+'\',\''+k+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_cfh.calPick(\''+c.id+'\',\''+k+'\')}"':'')
+        +'>'+(v?v.m:'')+'</td>';
     }
     h+='</tr>';
   }
-  return h+'</tbody></table></div></section>';
+  h+='</tbody></table></div>';
+  const sel=st.calSel&&byId(st.calSel.cid);
+  if(sel){
+    const dk=st.calSel.dk;let body='';
+    const hol=st.holidays.find(x=>x.coachId===sel.id&&x.from<=dk&&dk<=x.to);
+    if(hol){
+      const cs=(hol.covers||[]).filter(c=>c.date===dk);
+      body='<div class="ttl">'+esc(sel.name)+' is on holiday</div><div class="muted">'+fmtShort(hol.from)+' &rarr; '+fmtShort(hol.to)+'</div>'
+        +(cs.length?'<ul style="margin-top:10px">'+cs.map(c=>{const sb=c.subId===CANCEL?'Cancelled':c.subId?((byId(c.subId)||{}).name||'?'):'Needs cover';
+          return '<li>'+chip(c.time,c.type,c.loc)+' <span class="muted">'+esc(sb)+'</span></li>'}).join("")+'</ul>':'');
+    }else{
+      const items=[];
+      for(const x of st.holidays)(x.covers||[]).forEach(c=>{if(c.subId===sel.id&&c.date===dk)items.push({c,o:byId(x.coachId)})});
+      body='<div class="ttl">'+esc(sel.name)+' is covering</div><ul>'
+        +items.map(it=>'<li>'+chip(it.c.time,it.c.type,it.c.loc)+' <span class="muted">for '+esc((it.o||{}).name||'?')+'</span></li>').join("")+'</ul>';
+    }
+    h+='<div class="cal-detail"><div style="min-width:0"><div class="lbl" style="margin-bottom:8px">'+fmtShort(dk)+'</div>'+body+'</div>'
+      +'<button class="iconbtn" aria-label="Close details" onclick="_cfh.calPick(\''+sel.id+'\',\''+dk+'\')">'+ic('x')+'</button></div>';
+  }else h+='<p class="cal-hint">Tap an F or S to see the details.</p>';
+  return h+'</section>';
 }
 
 function vTeam(){
@@ -582,7 +653,8 @@ function vSettings(){
 
 function render(){
   const tabs=[["plan","Plan"],["calendar","Calendar"],["team","Team &amp; hours"],["settings","Settings"]];
-  const stat=store.mode==="cloud"?['','Live','Shared board: everyone with the link sees the same data. Press Refresh to load changes from others.']
+  const stat=(store.mode==="cloud"&&st.online===false)?['bad','Offline',"Can't reach the database. Changes are not being saved."]
+    :store.mode==="cloud"?['','Live','Shared board: everyone with the link sees the same data. Press Refresh to load changes from others.']
     :store.mode==="shared"?['shared','Shared','Shared with the whole team.']
     :store.mode==="local"?['warn','This device only','Saved in this browser only. Other coaches will not see it.']
     :['bad','Not saved','No storage available: data is lost when you close or refresh.'];
@@ -590,7 +662,10 @@ function render(){
     +'<div class="top-r"><span class="status '+stat[0]+'" title="'+esc(stat[2])+'"><i></i><span>'+stat[1]+'</span></span>'
     +'<button class="btn btn-ghost btn-sm" onclick="_cfh.refresh()" aria-label="Refresh">'+ic('refresh')+'<span>'+(st.loading?'Loading':'Refresh')+'</span></button></div></header>'
     +'<nav class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button class="tab'+(st.tab===k?' on':'')+'" role="tab" aria-selected="'+(st.tab===k)+'" onclick="_cfh.tab(\''+k+'\')">'+l+'</button>').join("")+'</nav>'
-    +'<main>';
+    +'<main>'
+    +(st.err?'<div class="alert" role="alert">'+ic('alert')+'<div class="msg"><b>'+esc(st.err.t)+'</b><span>'+esc(st.err.d)+'</span></div>'
+      +'<div class="row"><button class="btn btn-primary btn-sm" onclick="_cfh.refresh()">Retry</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="_cfh.dismissErr()">Dismiss</button></div></div>':'');
   if(st.loading)h+='<div class="stats"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div><div class="sk" style="height:260px"></div>';
   else h+=st.tab==="team"?vTeam():st.tab==="plan"?vPlan():st.tab==="settings"?vSettings():vCal();
   document.getElementById("app").innerHTML=h+'</main>';
