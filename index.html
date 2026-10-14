@@ -658,7 +658,7 @@ function render(){
     :store.mode==="shared"?['shared','Shared','Shared with the whole team.']
     :store.mode==="local"?['warn','This device only','Saved in this browser only. Other coaches will not see it.']
     :['bad','Not saved','No storage available: data is lost when you close or refresh.'];
-  let h='<header class="top"><div class="brand">'+LOGO+'<div><h1>Holiday Board</h1><p>Hofplein coaching team</p></div></div>'
+  let h='<header class="top"><div class="brand">'+LOGO+'<div><h1>Holiday Board</h1><p>Community Fitness &amp; Health</p></div></div>'
     +'<div class="top-r"><span class="status '+stat[0]+'" title="'+esc(stat[2])+'"><i></i><span>'+stat[1]+'</span></span>'
     +'<button class="btn btn-ghost btn-sm" onclick="_cfh.refresh()" aria-label="Refresh">'+ic('refresh')+'<span>'+(st.loading?'Loading':'Refresh')+'</span></button></div></header>'
     +'<nav class="tabs" role="tablist">'+tabs.map(([k,l])=>'<button class="tab'+(st.tab===k?' on':'')+'" role="tab" aria-selected="'+(st.tab===k)+'" onclick="_cfh.tab(\''+k+'\')">'+l+'</button>').join("")+'</nav>'
